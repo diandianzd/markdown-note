@@ -1,0 +1,16 @@
+node_modules/
+
+# app config
+config/index.js
+
+# Editor directories and files
+.idea
+.vscode
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.local
+
+package-lock.json
+yarn.lock
