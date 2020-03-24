@@ -70,25 +70,25 @@
 </template>
 
 <script>
-import MarkdownEditor from "@/components/MarkdownEditor";
-import Tinymce from "@/components/Tinymce";
-import Sticky from "@/components/Sticky"; // 粘性header组件
-import { fetchArticle, createArticle, deleteArticle } from "@/api/posts";
-import * as noteFun from "@/utils/note";
-import { mapState } from "vuex";
+import MarkdownEditor from '@/components/MarkdownEditor'
+import Tinymce from '@/components/Tinymce'
+import Sticky from '@/components/Sticky' // 粘性header组件
+import { fetchArticle, createArticle, deleteArticle } from '@/api/posts'
+import * as noteFun from '@/utils/note'
+import { mapState } from 'vuex'
 
 const defaultForm = {
-  status: "draft",
-  title: "", // 文章题目
-  content: "", // 文章内容
-  id: "",
-  type: "markdown",
+  status: 'draft',
+  title: '', // 文章题目
+  content: '', // 文章内容
+  id: '',
+  type: 'markdown',
   importance: 0,
   categories: []
-};
+}
 
 export default {
-  name: "ArticleDetail",
+  name: 'ArticleDetail',
   components: {
     Tinymce,
     Sticky,
@@ -110,18 +110,18 @@ export default {
   },
   data() {
     const validateRequire = (rule, value, callback) => {
-      if (value === "") {
+      if (value === '') {
         this.$message({
-          message: rule.field + "为必传项",
-          type: "error"
-        });
-        callback(new Error(rule.field + "为必传项"));
+          message: rule.field + '为必传项',
+          type: 'error'
+        })
+        callback(new Error(rule.field + '为必传项'))
       } else {
-        callback();
+        callback()
       }
-    };
+    }
     return {
-      oldTitle: "",
+      oldTitle: '',
       postLoading: false,
       postForm: Object.assign({}, defaultForm),
       loading: false,
@@ -133,7 +133,7 @@ export default {
       tempRoute: {},
       timer: null,
       autoSaveTime: 0
-    };
+    }
   },
   computed: {
     ...mapState({
@@ -144,152 +144,151 @@ export default {
   watch: {
     postForm: {
       handler(newData, oldData) {
-        this.set(this.postForm);
+        this.set(this.postForm)
       },
       // immediate: true,
       deep: true
     }
   },
   created() {
-    const _this = this;
+    const _this = this
     // 默认分类信息
-    let categories = "";
+    let categories = ''
     // tab调用
     if (this.isTab) {
       if (this.isEdit) {
-        this.fetchData(this.postOrigin.id);
+        this.fetchData(this.postOrigin.id)
       } else {
-        categories = this.postOrigin.categories;
+        categories = this.postOrigin.categories
       }
     } else {
       // 普通调用
-      categories = this.$route.query.categories || "";
+      categories = this.$route.query.categories || ''
       if (this.isEdit) {
-        const id = this.$route.query.id;
-        this.fetchData(id);
+        const id = this.$route.query.id
+        this.fetchData(id)
       } else {
-        this.postForm = Object.assign({}, defaultForm);
+        this.postForm = Object.assign({}, defaultForm)
       }
     }
 
-    if (categories !== "") {
+    if (categories !== '') {
       _this.postForm.categories = noteFun.getCategories(
         Array.isArray(categories) ? categories[0] : categories
-      );
+      )
     }
-    this.tempRoute = Object.assign({}, this.$route);
+    this.tempRoute = Object.assign({}, this.$route)
   },
   methods: {
     autoSave() {
-      const autoSaveFlag = this.$store.state.settings.autoSaveFlag;
-      if (!autoSaveFlag) return;
-      this.autoSaveTime = 2;
+      const autoSaveFlag = this.$store.state.settings.autoSaveFlag
+      if (!autoSaveFlag) return
+      this.autoSaveTime = 2
       if (!this.timer) {
         this.timer = setInterval(() => {
-          this.autoSaveTime--;
+          this.autoSaveTime--
           if (this.autoSaveTime <= 0) {
-            this.submitForm();
-            this.clearTimer();
+            this.submitForm()
+            this.clearTimer()
           }
-        }, 1000);
+        }, 1000)
       }
     },
     clearTimer() {
-      this.autoSaveTime = 0;
-      clearInterval(this.timer);
-      this.timer = null;
+      this.autoSaveTime = 0
+      clearInterval(this.timer)
+      this.timer = null
     },
     titleBlur() {
-
       if (
         !!this.postForm.title &&
         !!this.postForm.content &&
         this.postForm.title !== this.oldTitle
       ) {
-        this.autoSave();
+        this.autoSave()
       }
     },
     editorChange(val) {
-      const checkChange = val !== this.postForm.content;
-      if (val !== "" && checkChange) {
-        this.autoSave();
+      const checkChange = val !== this.postForm.content
+      if (val !== '' && checkChange) {
+        this.autoSave()
       }
     },
     set(val) {
-      this.$emit("currentPost", val);
+      this.$emit('currentPost', val)
     },
     handleModifyStatus(row, status) {
-      this.$confirm("是否删除?", "DELETE MESSAGE", {
-        confirmButtonText: "确定",
-        cancelButtonText: "取消",
-        type: "warning"
+      this.$confirm('是否删除?', 'DELETE MESSAGE', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
       })
         .then(() => {
           deleteArticle(row.id).then(() => {
             this.$message({
-              message: "操作成功",
-              type: "success"
-            });
+              message: '操作成功',
+              type: 'success'
+            })
             if (this.isTab) {
-              this.$router.go(0);
-              row.status = status;
+              this.$router.go(0)
+              row.status = status
             } else {
-              this.$router.push({ path: "/post/list" });
+              this.$router.push({ path: '/post/list' })
             }
-          });
+          })
         })
-        .catch(() => {});
+        .catch(() => {})
     },
     fetchData(id) {
-      this.postLoading = true;
+      this.postLoading = true
       fetchArticle(id)
         .then(response => {
-          this.postForm = response.data;
-          this.oldTitle = response.data.title;
+          this.postForm = response.data
+          this.oldTitle = response.data.title
           this.postForm.categories = noteFun.getCategories(
             response.data.category
-          );
-          this.postLoading = false;
+          )
+          this.postLoading = false
         })
         .catch(err => {
-          console.log(err);
-        });
+          console.log(err)
+        })
     },
     submitForm() {
-      this.clearTimer();
+      this.clearTimer()
 
-      if(!this.postForm.title || !this.postForm.content){
-        return this.$message.error('内容或标题不能为空')
-        console.log("error submit!!");
+      if (!this.postForm.content) {
+        return this.$message.error('内容不能为空')
+        console.log('error submit!!')
       }
 
       createArticle(this.postForm)
         .then(response => {
           if (response.data.isNewPost === 1) {
-            this.postForm.id = response.data.id;
-            this.set(Object.assign(this.postForm, { isNewPost: true }));
+            this.postForm.id = response.data.id
+            this.set(Object.assign(this.postForm, { isNewPost: true }))
 
             if (!this.isTab) {
               this.$router.push({
-                path: "/post/update",
+                path: '/post/update',
                 query: { id: response.data.id }
-              });
-              return true;
+              })
+              return true
             }
           }
-          this.set(this.postForm);
-          this.oldTitle = this.postForm.title;
-          console.log("post saved");
-          this.postForm.status = "published";
-          this.loading = false;
+          this.set(this.postForm)
+          this.oldTitle = this.postForm.title
+          console.log('post saved')
+          this.postForm.status = 'published'
+          this.loading = false
         })
         .catch(err => {
-          this.loading = false;
-          console.log(err);
-        });
+          this.loading = false
+          console.log(err)
+        })
     }
   }
-};
+}
 </script>
 
 <style lang="scss" scoped>

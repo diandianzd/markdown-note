@@ -5,9 +5,9 @@
       :model="loginForm"
       :rules="loginRules"
       class="login-form"
-      @submit.native.prevent
       auto-complete="on"
       label-position="left"
+      @submit.native.prevent
     >
       <el-form-item prop="password">
         <span class="svg-container">
@@ -31,70 +31,70 @@
 </template>
 
 <script>
-import { validUsername } from "@/utils/validate";
+import { validUsername } from '@/utils/validate'
 
 export default {
-  name: "Login",
+  name: 'Login',
   data() {
     const validatePassword = (rule, value, callback) => {
       if (value.length < 4) {
-        callback(new Error("The password can not be less than 4 digits"));
+        callback(new Error('The password can not be less than 4 digits'))
       } else {
-        callback();
+        callback()
       }
-    };
+    }
     return {
       loginForm: {
-        password: ""
+        password: ''
       },
       loginRules: {
         password: [
-          { required: true, trigger: "blur", validator: validatePassword }
+          { required: true, trigger: 'blur', validator: validatePassword }
         ]
       },
-      passwordType: "password",
+      passwordType: 'password',
       loading: false,
       redirect: undefined
-    };
+    }
   },
   watch: {
     $route: {
       handler: function(route) {
-        this.redirect = route.query && route.query.redirect;
+        this.redirect = route.query && route.query.redirect
       },
       immediate: true
     }
   },
   mounted() {
-    if (this.loginForm.password === "") {
-      this.$refs.password.focus();
+    if (this.loginForm.password === '') {
+      this.$refs.password.focus()
     }
   },
   methods: {
     handleLogin() {
       this.$refs.loginForm.validate(valid => {
         if (valid) {
-          this.loading = true;
+          this.loading = true
           this.$store
             .dispatch(
-              "user/login",
-              Object.assign({}, this.loginForm, { username: "admin" })
+              'user/login',
+              Object.assign({}, this.loginForm, { username: 'admin' })
             )
             .then(() => {
-              this.$router.push({ path: "/" });
-              this.loading = false;
+              this.$router.push({ path: '/' })
+              this.loading = false
             })
             .catch(() => {
-              this.loading = false;
-            });
+              this.loading = false
+            })
         } else {
-          console.log("error submit!!");
-          return false;
+          console.log('error submit!!')
+          return false
         }
-      });
+      })
     }
   }
-};
+}
 </script>
 
 <style lang="scss">
