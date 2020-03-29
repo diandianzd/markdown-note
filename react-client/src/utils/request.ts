@@ -4,6 +4,7 @@
  */
 import { extend } from 'umi-request';
 import { notification } from 'antd';
+import { getToken} from './auth';
 
 const codeMessage = {
   200: '服务器成功返回请求的数据。',
@@ -49,8 +50,23 @@ const errorHandler = (error: { response: Response }): Response => {
  * 配置request请求时的默认参数
  */
 const request = extend({
+  data: {
+    t: getToken()
+  },
   errorHandler, // 默认错误处理
   credentials: 'include', // 默认请求是否带上cookie
 });
+
+// response拦截器, 处理response
+request.interceptors.response.use(async (response) => {
+  const data = await response.clone().json();
+  if (data.code !== 1) {
+    // removeToken()
+    // window.location.href = '/';
+    // return Promise.reject(new Error('登录过期'))
+  }
+  return response;
+});
+
 
 export default request;

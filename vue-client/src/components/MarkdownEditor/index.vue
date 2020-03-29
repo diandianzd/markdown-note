@@ -7,12 +7,8 @@
 import 'codemirror/lib/codemirror.css' // Editor's Dependency Style
 import '@toast-ui/editor/dist/toastui-editor.css' // Editor's Style
 
-import 'highlight.js/styles/github.css'
-
-import codeSyntaxHightlight from '@toast-ui/editor-plugin-code-syntax-highlight'
 import Editor from '@toast-ui/editor'
 import defaultOptions from './default-options'
-import hljs from 'highlight.js'
 
 export default {
   name: 'MarddownEditor',
@@ -95,7 +91,6 @@ export default {
       this.$nextTick(() => {
         this.editor = new Editor({
           el: document.getElementById(this.id),
-          plugins: [[codeSyntaxHightlight, { hljs }]],
           ...this.editorOptions
         })
         if (this.value) {

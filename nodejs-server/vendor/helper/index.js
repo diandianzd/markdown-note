@@ -22,7 +22,12 @@ app.getNetIp = function (_http) {
     }
     return ipArray[0];
   } // 获取不到时
-  return _http.ip().substring(_http.ip().lastIndexOf(':') + 1);
+  if (typeof _http.ip === 'function') {
+      return _http.ip().substring(_http.ip().lastIndexOf(':') + 1);
+    }else{
+      return '-1'
+    }
+
 };
 
 app.timestamp = function () {

@@ -51,7 +51,7 @@ const Login: React.FC<LoginProps> = (props) => {
           )}
 
           <UserName
-            name="userName"
+            name="username"
             placeholder="用户名: admin or user"
             rules={[
               {

@@ -63,6 +63,13 @@ export default defineConfig({
               component: './Welcome',
             },
             {
+              path: '/articles/*',
+              name: 'articles',
+              icon: 'smile',
+              component: './Welcome',
+            },
+
+            {
               path: '/admin',
               name: 'admin',
               icon: 'crown',
@@ -82,6 +89,12 @@ export default defineConfig({
               name: 'list.table-list',
               icon: 'table',
               path: '/list',
+              component: './ListTableList',
+            },
+            {
+              name: 'list.table-list',
+              icon: 'table',
+              path: '/test/*',
               component: './ListTableList',
             },
             {

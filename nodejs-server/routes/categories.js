@@ -9,7 +9,7 @@ router.post('/delete', bodyParser.urlencoded({ extended: true }), async (req, re
   try {
     const id = parseInt(req.body.id || 0, 10);
     const childCategoryExist = await new DB().table('note_categories').where({ status: 1, parent_id: id }).query(true);
-    if (childCategoryExist){
+    if (childCategoryExist) {
       return res.send({ code: 0, message: '请先删除子分类', data: null });
     }
     const rsp = await new DB().table('note_posts')
@@ -80,6 +80,38 @@ router.post('/list', async (req, res, next) => {
         list: queryList,
         total: queryCount.total,
       },
+    });
+  } catch (e) {
+    console.log(e);
+    res.send({ code: 0, message: '数据查询错误', data: null });
+  }
+});
+
+router.post('/menudata', async (req, res, next) => {
+  try {
+    const queryPostCategories = await new DB().table('note_posts').select(['DISTINCT category']).query();
+    const postCatIds = queryPostCategories.reduce((pre, cur) => pre.concat(cur.category), []);
+
+    //    'select icon, id, name, parent_id from note_categories WHERE status = 1 order by modified desc'
+    const queryAllCategories = await new DB().table('note_categories')
+      .select(['icon', 'id', 'name', 'parent_id'])
+      .where({ status: 1 })
+      .orderBy('modified desc')
+      .query();
+
+    queryAllCategories.forEach((item, index) => {
+      if (postCatIds.includes(item.id)) {
+        queryAllCategories[index].used = 1;
+      } else {
+        queryAllCategories[index].used = 0;
+      }
+    });
+
+    console.log(queryAllCategories)
+    res.send({
+      code: 1,
+      message: 'success',
+      data: queryAllCategories,
     });
   } catch (e) {
     console.log(e);

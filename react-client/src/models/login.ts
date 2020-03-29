@@ -4,6 +4,7 @@ import { history, Reducer, Effect } from 'umi';
 import { fakeAccountLogin } from '@/services/login';
 import { setAuthority } from '@/utils/authority';
 import { getPageQuery } from '@/utils/utils';
+import { setToken, removeToken } from '@/utils/auth';
 
 export interface StateType {
   status?: 'ok' | 'error';
@@ -33,12 +34,13 @@ const Model: LoginModelType = {
   effects: {
     *login({ payload }, { call, put }) {
       const response = yield call(fakeAccountLogin, payload);
+      setToken(response.data.access_token)
       yield put({
         type: 'changeLoginStatus',
-        payload: response,
+        payload: response.data,
       });
       // Login successfully
-      if (response.status === 'ok') {
+      if (response.code === 1) {
         const urlParams = new URL(window.location.href);
         const params = getPageQuery();
         let { redirect } = params as { redirect: string };
@@ -54,11 +56,13 @@ const Model: LoginModelType = {
             return;
           }
         }
-        history.replace(redirect || '/');
+        // history.replace(redirect || '/');
+        window.location.href = '/';
       }
     },
 
     logout() {
+      removeToken()
       const { redirect } = getPageQuery();
       // Note: There may be security issues, please note
       if (window.location.pathname !== '/user/login' && !redirect) {

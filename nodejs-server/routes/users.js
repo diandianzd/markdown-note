@@ -105,7 +105,9 @@ router.post('/login', bodyParser.urlencoded({ extended: true }), async (req, res
       res.send({
         code: 1,
         message: '操作成功',
-        data: { id: 1, username: 'admin', access_token: token },
+        data: {
+          id: 1, username: 'admin', access_token: token, currentAuthority: 'admin',
+        },
       });
     }).catch((err) => {
       res.send({ code: 0, message: '账号或密码错误', data: null });
@@ -140,6 +142,7 @@ router.post('/info', async (req, res, next) => {
       code: 1,
       message: 'success',
       data: {
+        id: -1,
         categories: queryAllCategories,
         roles: ['admin'],
         introduction: 'I am a super administrator',
