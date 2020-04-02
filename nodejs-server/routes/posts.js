@@ -46,16 +46,16 @@ router.post('/view', async (req, res, next) => {
 router.post('/property', bodyParser.urlencoded({ extended: true }), async (req, res, next) => {
   try {
     const {
-      title, categories, id, type, status,
+      title, id, type, status,
     } = req.body;
-    let category = categories[categories.length - 1];
-    if (!category || category < 0) category = -1;
+    const category = req.body.category || -1
+
 
     const rs = await new DB().table('note_posts')
       .where({ id })
       .update({
         status,
-        type,
+        type: 'markdown',
         title,
         category,
         modified: Math.ceil(new Date().getTime() / 1000),
@@ -73,13 +73,12 @@ router.post('/property', bodyParser.urlencoded({ extended: true }), async (req, 
 });
 
 router.post('/save', bodyParser.urlencoded({ extended: true }), async (req, res, next) => {
-// INSERT INTO note_posts set  status="active", type="markdown", title=? , content=? , category=?, modified= 1558938981, created= 1558938981
+  // INSERT INTO note_posts set  status="active", type="markdown", title=? , content=? , category=?, modified= 1558938981, created= 1558938981
   try {
     const {
-      title, content, categories, id, type,
+      title, content, id, type,
     } = req.body;
-    let category = categories[categories.length - 1];
-    if (!category || category < 0) category = -1;
+    const category = req.body.category || -1
     const curTime = Math.ceil(new Date().getTime() / 1000);
     // 替换图片内容为 [img] 减少内容搜索
     const contentFilter = content.replace(/!\[.*\]\(.*?\)|"data:image\/.*?base64.*?"/mg, '[img]');
@@ -87,7 +86,7 @@ router.post('/save', bodyParser.urlencoded({ extended: true }), async (req, res,
     const params = {
       status: 'active',
       title,
-      type,
+      type: 'markdown',
       content,
       content_filter: contentFilter,
       category,

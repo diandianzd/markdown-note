@@ -1,6 +1,7 @@
 import { Effect, Reducer } from 'umi';
 
 import { query as queryUsers } from '@/services/user';
+import { usersHeart } from '@/services/login'
 import { getToken } from '@/utils/auth';
 
 export interface CurrentUser {
@@ -27,7 +28,7 @@ export interface UserModelType {
   state: UserModelState;
   effects: {
     fetch: Effect;
-    fetchCurrent: Effect;
+    knock: Effect;
   };
   reducers: {
     saveCurrentUser: Reducer<UserModelState>;
@@ -50,12 +51,18 @@ const UserModel: UserModelType = {
         payload: response,
       });
     },
-    *fetchCurrent(_, { put }) {
-      // const response = yield call(queryCurrent);
+    *knock(_, {  put }) {
+
+      setInterval(function () {
+        usersHeart().then(() => {
+        })
+      }, 60000)
+
       yield put({
         type: 'saveCurrentUser',
-        payload: { 
-          userid: -1, token: getToken(),
+        payload: {
+          userid: -1,
+          token: getToken(),
           name: 'Serati Ma',
           avatar: 'https://gw.alipayobjects.com/zos/antfincdn/XAosXuNZyF/BiazfanxmamNRoxxVxka.png',
         },
@@ -65,6 +72,7 @@ const UserModel: UserModelType = {
 
   reducers: {
     saveCurrentUser(state, action) {
+
       return {
         ...state,
         currentUser: action.payload || {},

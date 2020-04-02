@@ -13,10 +13,6 @@ class ToastUi extends React.Component {
 
   editorInst = null;
 
-
-
-
-
   componentDidMount() {
     this.editorInst = new Editor({
       el: this.rootEl.current,
@@ -35,8 +31,9 @@ class ToastUi extends React.Component {
   }
 
   shouldComponentUpdate(nextProps) {
+
     const instance = this.getInstance();
-    const { height, previewStyle } = nextProps;
+    const { height, previewStyle, value: content } = nextProps;
 
     if (this.props.height !== height) {
       instance.height(height);
@@ -46,7 +43,10 @@ class ToastUi extends React.Component {
       instance.changePreviewStyle(previewStyle);
     }
     // 更新value
-    this.setValue(this.props.value)
+    if (this.props.value !== content) {
+      this.setValue(content)
+    }
+
 
     return false;
   }

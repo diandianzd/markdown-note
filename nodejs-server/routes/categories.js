@@ -107,7 +107,6 @@ router.post('/menudata', async (req, res, next) => {
       }
     });
 
-    console.log(queryAllCategories)
     res.send({
       code: 1,
       message: 'success',

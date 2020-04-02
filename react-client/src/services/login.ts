@@ -14,6 +14,19 @@ export async function fakeAccountLogin(params: LoginParamsType) {
   });
 }
 
+export async function usersHeart() {
+  return request('/api/users/heart', {
+    method: 'POST',
+  });
+}
+
+export async function usersLogout() {
+  return request('/api/users/logout', {
+    method: 'POST',
+  });
+}
+
+
 export async function getFakeCaptcha(mobile: string) {
   return request(`/api/login/captcha?mobile=${mobile}`);
 }

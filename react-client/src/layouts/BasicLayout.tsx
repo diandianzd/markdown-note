@@ -3,15 +3,9 @@
  * You can view component api by:
  * https://github.com/ant-design/ant-design-pro-layout
  */
-import ProLayout, {
-  MenuDataItem,
-  BasicLayoutProps as ProLayoutProps,
-  Settings,
-  DefaultFooter,
-} from '@ant-design/pro-layout';
+import ProLayout, { MenuDataItem, BasicLayoutProps as ProLayoutProps, Settings } from '@ant-design/pro-layout';
 import React, { useEffect } from 'react';
 import { Link, connect, Dispatch } from 'umi';
-import { GithubOutlined } from '@ant-design/icons';
 import { Result, Button } from 'antd';
 import Authorized from '@/utils/Authorized';
 import RightContent from '@/components/GlobalHeader/RightContent';
@@ -59,32 +53,6 @@ export type BasicLayoutContext = { [K in 'location']: BasicLayoutProps[K] } & {
 } */
 
 
-const defaultFooterDom = (
-  <DefaultFooter
-    copyright="2019 蚂蚁金服体验技术部出品"
-    links={[
-      {
-        key: 'Ant Design Pro',
-        title: 'Ant Design Pro',
-        href: 'https://pro.ant.design',
-        blankTarget: true,
-      },
-      {
-        key: 'github',
-        title: <GithubOutlined />,
-        href: 'https://github.com/ant-design/ant-design-pro',
-        blankTarget: true,
-      },
-      {
-        key: 'Ant Design',
-        title: 'Ant Design',
-        href: 'https://ant.design',
-        blankTarget: true,
-      },
-    ]}
-  />
-);
-
 const BasicLayout: React.FC<BasicLayoutProps> = props => {
   const {
     dispatch,
@@ -100,9 +68,6 @@ const BasicLayout: React.FC<BasicLayoutProps> = props => {
 
   useEffect(() => {
     if (dispatch) {
-      /* dispatch({
-        type: 'user/fetchCurrent',
-      }); */
       dispatch({
         type: 'menu/getMenuData',
       });
@@ -127,6 +92,7 @@ const BasicLayout: React.FC<BasicLayoutProps> = props => {
   return (
     <>
       <ProLayout
+        siderWidth={210}
         logo={logo}
         menuHeaderRender={() => (
           <></>
@@ -136,16 +102,10 @@ const BasicLayout: React.FC<BasicLayoutProps> = props => {
           if (menuItemProps.isUrl || menuItemProps.children || !menuItemProps.path) {
             return defaultDom;
           }
-
-          return <Link to={menuItemProps.path}>{defaultDom}</Link>;
+          const { parent_id: parentCat, value: currentCat } = menuItemProps
+          return <Link to={{ pathname: menuItemProps.path, state: { parentCat, currentCat } }}>{defaultDom}</Link>;
         }}
-        breadcrumbRender={(routers = []) => [
-          {
-            path: '/',
-            breadcrumbName: '首页',
-          },
-          ...routers,
-        ]}
+
         itemRender={(route, params, routes, paths) => {
           const first = routes.indexOf(route) === 0;
           return first ? (
@@ -154,7 +114,7 @@ const BasicLayout: React.FC<BasicLayoutProps> = props => {
               <span>{route.breadcrumbName}</span>
             );
         }}
-        footerRender={() => defaultFooterDom}
+
         menuDataRender={() => props.menuData || []}
         // menuDataRender={menuDataRender}
         rightContentRender={() => <RightContent />}
