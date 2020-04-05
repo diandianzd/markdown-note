@@ -11,6 +11,12 @@ import defaultOptions from './default-options';
 
 class ToastUi extends React.Component {
 
+  constructor(props) {
+    super(props)
+    this.state = {
+      content: ''
+    }
+  }
 
   rootEl = React.createRef();
 
@@ -22,13 +28,16 @@ class ToastUi extends React.Component {
       ...defaultOptions,
       ...this.props
     });
-    // 初始化value
-    this.setValue(this.props.value)
-
+    /*     // 初始化value
+        this.setState({ content: this.props.value }, () => {
+          this.setValue(this.props.value)
+        }) */
     this.editorInst.on('change', () => {
       const content = this.getValue()
-      if (content !== this.props.value) {
-        this.props.onChange(content)
+      if (content !== this.state.content) {
+        this.setState({ content }, () => {
+          this.props.onChange(content)
+        })
       }
     })
   }
@@ -36,7 +45,8 @@ class ToastUi extends React.Component {
   shouldComponentUpdate(nextProps) {
 
     const instance = this.getInstance();
-    const { height, previewStyle, value: content } = nextProps;
+    const { height, previewStyle, value: nextValue } = nextProps;
+
 
     if (this.props.height !== height) {
       instance.height(height);
@@ -46,8 +56,9 @@ class ToastUi extends React.Component {
       instance.changePreviewStyle(previewStyle);
     }
     // 更新value
-    if (this.props.value !== content) {
-      this.setValue(content)
+    if (this.state.content !== nextValue
+      && nextValue !== this.props.value) {
+      this.setValue(nextValue)
     }
 
 

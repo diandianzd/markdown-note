@@ -44,7 +44,8 @@ export default (props: any): React.ReactNode => {
      */
     const handleNew = () => {
         const categories = getCategories(currentCat, [], menuList || [])
-        const newArticle = { categories }
+        const category = categories.length > 0 ? categories[categories.length - 1] : -1
+        const newArticle = { categories, category }
         setArticle(newArticle)
         setPostList([
             newArticle,

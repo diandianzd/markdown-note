@@ -1,11 +1,10 @@
-import { Tooltip, Tag } from 'antd';
-import { QuestionCircleOutlined, BlockOutlined } from '@ant-design/icons';
+import { Tooltip } from 'antd';
+import { BlockOutlined } from '@ant-design/icons';
 import React, { useState } from 'react';
 import { connect, ConnectProps } from 'umi';
 import { ConnectState } from '@/models/connect';
-import Avatar from './AvatarDropdown';
 import HeaderSearch from '../HeaderSearch';
-import SelectLang from '../SelectLang';
+import SettingDropdown from '../SettingDropdown';
 import styles from './index.less';
 import CategoryForm from '../CategoryForm';
 
@@ -14,12 +13,6 @@ export interface GlobalHeaderRightProps extends Partial<ConnectProps> {
   theme?: SiderTheme;
   layout: 'sidemenu' | 'topmenu';
 }
-
-const ENVTagColor = {
-  dev: 'orange',
-  test: 'green',
-  pre: '#87d068',
-};
 
 const GlobalHeaderRight: React.SFC<GlobalHeaderRightProps> = (props) => {
   const [categoryModalVisible, handleCategoryModalVisible] = useState<boolean>(false);
@@ -47,13 +40,7 @@ const GlobalHeaderRight: React.SFC<GlobalHeaderRightProps> = (props) => {
         <BlockOutlined className={styles.action}
           onClick={() => handleCategoryModalVisible(true)} />
       </Tooltip>
-      <Avatar />
-      {REACT_APP_ENV && (
-        <span>
-          <Tag color={ENVTagColor[REACT_APP_ENV]}>{REACT_APP_ENV}</Tag>
-        </span>
-      )}
-      <SelectLang className={styles.action} />
+      <SettingDropdown className={styles.action} />
       {categoryModalVisible ? (
         <CategoryForm
           onClose={() => {
