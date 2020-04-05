@@ -4,7 +4,7 @@
  * https://github.com/ant-design/ant-design-pro-layout
  */
 import ProLayout, { MenuDataItem, BasicLayoutProps as ProLayoutProps, Settings } from '@ant-design/pro-layout';
-import React, { useEffect } from 'react';
+import React, { useEffect, ReactElement } from 'react';
 import { Link, connect, Dispatch } from 'umi';
 import { Result, Button } from 'antd';
 import Authorized from '@/utils/Authorized';
@@ -32,6 +32,8 @@ export interface BasicLayoutProps extends ProLayoutProps {
   route: ProLayoutProps['route'] & {
     authority: string[];
   };
+  menuList: Array<any>
+  catgoryData: Array<any>;
   settings: Settings;
   dispatch: Dispatch;
 }
@@ -44,13 +46,14 @@ export type BasicLayoutContext = { [K in 'location']: BasicLayoutProps[K] } & {
  * use Authorized check all menu item
  */
 
-/* const menuDataRender = (menuList: MenuDataItem[]): MenuDataItem[] =>{
-  console.log(menuList)
+const menuDataRender = (menuList: MenuDataItem[]): MenuDataItem[] => {
   return menuList.map(item => {
-    const localItem = { ...item, children: item.children ? menuDataRender(item.children) : [] };
+    const localItem = {
+      ...item, children: item.children ? menuDataRender(item.children) : [],
+    };
     return Authorized.check(item.authority, localItem, null) as MenuDataItem;
   });
-} */
+}
 
 
 const BasicLayout: React.FC<BasicLayoutProps> = props => {
@@ -115,14 +118,21 @@ const BasicLayout: React.FC<BasicLayoutProps> = props => {
             );
         }}
 
-        menuDataRender={() => props.menuData || []}
-        // menuDataRender={menuDataRender}
+        // menuDataRender={() => props.menuData || []}
+        menuDataRender={() => menuDataRender(props.menuData || [])}
         rightContentRender={() => <RightContent />}
         {...props}
         {...settings}
       >
         <Authorized authority={authorized!.authority} noMatch={noMatch}>
-          {children}
+          {
+            React.Children.map(children, (child: any) => {
+              return React.cloneElement(child, {
+                catgoryData: props.catgoryData,
+                menuList: props.menuList,
+              });
+            })
+          }
         </Authorized>
       </ProLayout>
     </>
@@ -131,6 +141,8 @@ const BasicLayout: React.FC<BasicLayoutProps> = props => {
 
 export default connect(({ global, settings, menu }: ConnectState) => ({
   collapsed: global.collapsed,
+  menuList: menu.menuList,
   menuData: menu.menuData,
+  catgoryData: menu.catgoryData,
   settings,
 }))(BasicLayout);

@@ -147,8 +147,7 @@ router.post('/list', async (req, res, next) => {
     const { limit = 20, page = 1 } = req.query;
     const offset = (page - 1) * limit;
 
-    let { content = '', status = 'active' } = req.query;
-    const { categories = [] } = req.query;
+    let { content = '', status = 'active',category = -1 } = req.query;
     let { sort = 'modified', asc = 'desc' } = req.query;
     // verify values
     if (!['modified', 'id'].includes(sort)) sort = 'modified';
@@ -160,11 +159,11 @@ router.post('/list', async (req, res, next) => {
     //  `select created,id,title,type,status,category from note_posts WHERE category = ? and status='active'`,
     const queryCount = await new DB().table('note_posts').select(['count(*) as total'])
       .where({ status })
-      .where({ category: categories[0], content_filter: ['like', content] }, true)
+      .where({ category: category, content_filter: ['like', content] }, true)
       .query(true);
     const queryList = await new DB().table('note_posts').select(['created', 'id', 'title', 'type', 'status', 'category'])
       .where({ status })
-      .where({ category: categories[0], content_filter: ['like', content] }, true)
+      .where({ category: category, content_filter: ['like', content] }, true)
       .orderBy(`${sort} ${asc}`)
       .limit(limit)
       .offset(offset)

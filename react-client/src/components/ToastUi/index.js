@@ -2,9 +2,12 @@ import React from 'react';
 
 import 'codemirror/lib/codemirror.css' // Editor's Dependency Style
 import '@toast-ui/editor/dist/toastui-editor.css' // Editor's Style
+import './index.less'
+
 
 import Editor from '@toast-ui/editor'
 import defaultOptions from './default-options';
+
 
 class ToastUi extends React.Component {
 
@@ -68,7 +71,7 @@ class ToastUi extends React.Component {
   }
 
   render() {
-    return <div ref={this.rootEl} />;
+    return <div className='toastUiWrap' ref={this.rootEl} />;
   }
 }
 ToastUi.defaultProps = {

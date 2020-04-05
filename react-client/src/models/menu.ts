@@ -1,11 +1,13 @@
 import { getMenuData } from '@/services/menu'; // 通过后台返回特定的数组json或者mock模拟数据
 
 import { Reducer, Effect } from 'umi';
-import { getCatRoutes } from '@/utils/note';
+import { getCatRoutes, deepClone, getCatChildren } from '@/utils/note';
 
 
 export interface MenuModelState {
-    menuData: any[];
+    [x: string]: any;
+    menuData: any[]
+    catgoryData: any[]
 }
 
 export interface MenuModelType {
@@ -23,24 +25,29 @@ const MenuModel: MenuModelType = {
     namespace: 'menu',
     state: {
         menuData: [],
+        catgoryData: [],
     },
     effects: {
         *getMenuData(_, { call, put }) {
             const response = yield call(getMenuData);
-            const menuData = getCatRoutes(response.data, 0);
-
+            const menuList = deepClone(response.data || []);
+            const menuData = getCatRoutes(deepClone(response.data || []), 0);
+            const catgoryData = getCatChildren(deepClone(response.data || []), 0);
             yield put({
                 type: 'save',
-                payload: menuData,
+                payload: [menuList, menuData, catgoryData],
             });
         },
     },
 
     reducers: {
         save(state, action) {
+            const [menuList, menuData, catgoryData] = action.payload
             return {
                 ...state,
-                menuData: action.payload || [],
+                menuList: menuList || [],
+                menuData: menuData || [],
+                catgoryData: catgoryData || [],
             };
         },
     },

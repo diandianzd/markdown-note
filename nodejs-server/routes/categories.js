@@ -34,12 +34,10 @@ router.post('/save', bodyParser.urlencoded({ extended: true }), async (req, res,
   // ``UPDATE note_categories set  status=1, name=? , icon=? , parent_id=?, modified= 1558938981, created= 1558938981 WHERE id = ?`
   try {
     const id = parseInt(req.body.id || 0, 10);
-    const { name, icon, categories } = req.body;
-    let parentId = categories[categories.length - 1];
-    if (!parentId || parentId === -1) parentId = 0;
+    const { name, icon, parent_id = 0 } = req.body;
     const curTime = Math.ceil(new Date().getTime() / 1000);
     const params = {
-      status: 1, name, icon, parent_id: parentId, modified: curTime,
+      status: 1, name, icon, parent_id, modified: curTime,
     };
     let rs = null;
     if (id > 0) {

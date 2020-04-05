@@ -1,12 +1,13 @@
 import { Tooltip, Tag } from 'antd';
-import { QuestionCircleOutlined } from '@ant-design/icons';
-import React from 'react';
+import { QuestionCircleOutlined, BlockOutlined } from '@ant-design/icons';
+import React, { useState } from 'react';
 import { connect, ConnectProps } from 'umi';
 import { ConnectState } from '@/models/connect';
 import Avatar from './AvatarDropdown';
 import HeaderSearch from '../HeaderSearch';
 import SelectLang from '../SelectLang';
 import styles from './index.less';
+import CategoryForm from '../CategoryForm';
 
 export type SiderTheme = 'light' | 'dark';
 export interface GlobalHeaderRightProps extends Partial<ConnectProps> {
@@ -21,6 +22,7 @@ const ENVTagColor = {
 };
 
 const GlobalHeaderRight: React.SFC<GlobalHeaderRightProps> = (props) => {
+  const [categoryModalVisible, handleCategoryModalVisible] = useState<boolean>(false);
   const { theme, layout } = props;
   let className = styles.right;
 
@@ -35,21 +37,15 @@ const GlobalHeaderRight: React.SFC<GlobalHeaderRightProps> = (props) => {
         placeholder="搜索文章"
         defaultValue=""
         options={[
-          
+
         ]}
-        // onSearch={value => {
-        //   //console.log('input', value);
-        // }}
+      // onSearch={value => {
+      //   //console.log('input', value);
+      // }}
       />
-      <Tooltip title="使用文档">
-        <a
-          target="_blank"
-          href="https://pro.ant.design/docs/getting-started"
-          rel="noopener noreferrer"
-          className={styles.action}
-        >
-          <QuestionCircleOutlined />
-        </a>
+      <Tooltip title="更新分类">
+        <BlockOutlined className={styles.action}
+          onClick={() => handleCategoryModalVisible(true)} />
       </Tooltip>
       <Avatar />
       {REACT_APP_ENV && (
@@ -58,6 +54,14 @@ const GlobalHeaderRight: React.SFC<GlobalHeaderRightProps> = (props) => {
         </span>
       )}
       <SelectLang className={styles.action} />
+      {categoryModalVisible ? (
+        <CategoryForm
+          onClose={() => {
+            handleCategoryModalVisible(false);
+          }}
+          categoryModalVisible={categoryModalVisible}
+        />
+      ) : null}
     </div>
   );
 };
