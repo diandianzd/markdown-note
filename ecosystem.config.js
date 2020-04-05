@@ -21,10 +21,10 @@ module.exports = {
     production : {
       user : 'root',
       host : 'markdown.note',
-      ref  : 'origin/master',
+      ref  : 'origin/deploy',
       repo : 'https://github.com/diandianzd/markdown-note.git',
       path : '/home/markdown-note',
-      'post-deploy' : 'cd vue-client && sudo npm install && npm run build:prod && cd .. && cd nodejs-server && sudo npm install && cd .. && pm2 reload ecosystem.config.js --env production'
+      'post-deploy' : 'cd nodejs-server && sudo npm install && cd .. && pm2 reload ecosystem.config.js --env production'
     }
   }
 };
