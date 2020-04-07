@@ -6,7 +6,6 @@ import { ConnectState } from '@/models/connect';
 import HeaderSearch from '../HeaderSearch';
 import SettingDropdown from '../SettingDropdown';
 import styles from './index.less';
-import CategoryForm from '../CategoryForm';
 
 export type SiderTheme = 'light' | 'dark';
 export interface GlobalHeaderRightProps extends Partial<ConnectProps> {
@@ -15,7 +14,7 @@ export interface GlobalHeaderRightProps extends Partial<ConnectProps> {
 }
 
 const GlobalHeaderRight: React.SFC<GlobalHeaderRightProps> = (props) => {
-  const [categoryModalVisible, handleCategoryModalVisible] = useState<boolean>(false);
+
   const { theme, layout } = props;
   let className = styles.right;
 
@@ -36,19 +35,11 @@ const GlobalHeaderRight: React.SFC<GlobalHeaderRightProps> = (props) => {
       //   //console.log('input', value);
       // }}
       />
-      <Tooltip title="更新分类">
-        <BlockOutlined className={styles.action}
-          onClick={() => handleCategoryModalVisible(true)} />
+      <Tooltip title="">
+        <BlockOutlined className={styles.action}/>
       </Tooltip>
       <SettingDropdown className={styles.action} />
-      {categoryModalVisible ? (
-        <CategoryForm
-          onClose={() => {
-            handleCategoryModalVisible(false);
-          }}
-          categoryModalVisible={categoryModalVisible}
-        />
-      ) : null}
+      
     </div>
   );
 };

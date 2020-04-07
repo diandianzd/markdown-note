@@ -1,12 +1,13 @@
-import { GlobalOutlined, LogoutOutlined, SettingOutlined } from '@ant-design/icons';
+import { GlobalOutlined, LogoutOutlined, SettingOutlined, BlockOutlined } from '@ant-design/icons';
 import { Menu } from 'antd';
 import { ClickParam } from 'antd/es/menu';
-import React from 'react';
+import React, { useState } from 'react';
 import classNames from 'classnames';
 import HeaderDropdown from '../HeaderDropdown';
 import styles from './index.less';
 import { connect } from 'umi';
 import { ConnectState } from '@/models/connect';
+import CategoryForm from '../CategoryForm';
 
 interface SettingDropdownProps {
   className?: string;
@@ -15,11 +16,12 @@ interface SettingDropdownProps {
 
 const SettingDropdown: React.FC<SettingDropdownProps> = (props) => {
   const { className } = props;
+  const [categoryModalVisible, handleCategoryModalVisible] = useState<boolean>(false);
+
   const onMenuClick = (event: ClickParam) => {
     const { key } = event;
 
     if (key === 'logout') {
-      console.log('s')
       const { dispatch } = props;
       if (dispatch) {
         dispatch({
@@ -27,6 +29,9 @@ const SettingDropdown: React.FC<SettingDropdownProps> = (props) => {
         });
       }
       return;
+    }
+    if (key === 'category') {
+      handleCategoryModalVisible(true)
     }
   };
 
@@ -36,14 +41,29 @@ const SettingDropdown: React.FC<SettingDropdownProps> = (props) => {
         <LogoutOutlined />
           退出登录
         </Menu.Item>
+      <Menu.Item key="category">
+        <BlockOutlined />
+          配置分类
+      </Menu.Item>
+
     </Menu>
   );
   return (
-    <HeaderDropdown overlay={settingMenu} placement="bottomRight">
-      <span className={classNames(styles.dropDown, className)}>
-        <SettingOutlined title="设置"/>
-      </span>
-    </HeaderDropdown>
+    <>
+      <HeaderDropdown overlay={settingMenu} placement="bottomRight">
+        <span className={classNames(styles.dropDown, className)}>
+          <SettingOutlined title="设置" />
+        </span>
+      </HeaderDropdown>
+      {categoryModalVisible ? (
+        <CategoryForm
+          onClose={() => {
+            handleCategoryModalVisible(false);
+          }}
+          categoryModalVisible={categoryModalVisible}
+        />
+      ) : null}
+    </>
   );
 };
 export default connect(({ user }: ConnectState) => ({

@@ -2,10 +2,9 @@ import { DefaultFooter, MenuDataItem, getMenuData, getPageTitle } from '@ant-des
 import { Helmet, HelmetProvider } from 'react-helmet-async';
 import { Link, ConnectProps, connect } from 'umi';
 import React from 'react';
-import SelectLang from '@/components/SettingDropdown';
 import { ConnectState } from '@/models/connect';
-import logo from '../assets/logo.svg';
 import styles from './UserLayout.less';
+import { ShopOutlined } from '@ant-design/icons';
 
 export interface UserLayoutProps extends Partial<ConnectProps> {
   breadcrumbNameMap: {
@@ -41,21 +40,23 @@ const UserLayout: React.FC<UserLayoutProps> = props => {
 
       <div className={styles.container}>
         <div className={styles.lang}>
-          <SelectLang />
         </div>
         <div className={styles.content}>
           <div className={styles.top}>
             <div className={styles.header}>
               <Link to="/">
-                <img alt="logo" className={styles.logo} src={logo} />
-                <span className={styles.title}>Ant Design</span>
+                {/* <img alt="logo" className={styles.logo} src={logo} /> */}
+                <span className={styles.title}>Markdown note</span>
               </Link>
             </div>
-            <div className={styles.desc}>Ant Design 是西湖区最具影响力的 Web 设计规范</div>
+            <div className={styles.desc}>今日笔记</div>
           </div>
           {children}
         </div>
-        <DefaultFooter />
+        <DefaultFooter
+          links={[]}
+          copyright={'2020 diandianzd'}
+        />
       </div>
     </HelmetProvider>
   );

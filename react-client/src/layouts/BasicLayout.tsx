@@ -4,7 +4,7 @@
  * https://github.com/ant-design/ant-design-pro-layout
  */
 import ProLayout, { MenuDataItem, BasicLayoutProps as ProLayoutProps, Settings } from '@ant-design/pro-layout';
-import React, { useEffect, ReactElement } from 'react';
+import React, { useEffect, ReactElement, useState } from 'react';
 import { Link, connect, Dispatch } from 'umi';
 import { Result, Button } from 'antd';
 import Authorized from '@/utils/Authorized';
@@ -12,6 +12,8 @@ import RightContent from '@/components/GlobalHeader/RightContent';
 import { ConnectState } from '@/models/connect';
 import { getAuthorityFromRouter } from '@/utils/utils';
 import logo from '../assets/logo.svg';
+import { UpCircleOutlined } from '@ant-design/icons';
+import CategoryForm from '@/components/CategoryForm';
 
 const noMatch = (
   <Result
@@ -42,18 +44,7 @@ export type BasicLayoutContext = { [K in 'location']: BasicLayoutProps[K] } & {
     [path: string]: MenuDataItem;
   };
 };
-/**
- * use Authorized check all menu item
- */
 
-const menuDataRender = (menuList: MenuDataItem[]): MenuDataItem[] => {
-  return menuList.map(item => {
-    const localItem = {
-      ...item, children: item.children ? menuDataRender(item.children) : [],
-    };
-    return Authorized.check(item.authority, localItem, null) as MenuDataItem;
-  });
-}
 
 
 const BasicLayout: React.FC<BasicLayoutProps> = props => {
@@ -68,6 +59,8 @@ const BasicLayout: React.FC<BasicLayoutProps> = props => {
   /**
    * constructor
    */
+  const [categoryModalVisible, handleCategoryModalVisible] = useState<boolean>(false);
+  const [categoryModalInitCat, handleCategoryModalInitCat] = useState<string>('');
 
   useEffect(() => {
     if (dispatch) {
@@ -80,6 +73,31 @@ const BasicLayout: React.FC<BasicLayoutProps> = props => {
    * init variables
    */
 
+
+  /**
+   * 右键点击菜单
+   * @param e 
+   * @param catData 
+   */
+  const handleOnContextMenu = (e: any, currentCat: string) => {
+    e.preventDefault()
+    handleCategoryModalInitCat(currentCat)
+    handleCategoryModalVisible(true)
+  }
+
+  /**
+   * use Authorized check all menu item
+   */
+
+  const menuDataRender = (menuList: MenuDataItem[]): MenuDataItem[] => {
+    return menuList.map((item: any) => {
+      item.name = <span onContextMenu={(e) => handleOnContextMenu(e, item.value)} >{item.name}</span>
+      const localItem = {
+        ...item, children: item.children ? menuDataRender(item.children) : [],
+      };
+      return Authorized.check(item.authority, localItem, null) as MenuDataItem;
+    });
+  }
   const handleMenuCollapse = (payload: boolean): void => {
     if (dispatch) {
       dispatch({
@@ -106,7 +124,10 @@ const BasicLayout: React.FC<BasicLayoutProps> = props => {
             return defaultDom;
           }
           const { parent_id: parentCat, value: currentCat } = menuItemProps
-          return <Link to={{ pathname: menuItemProps.path, state: { parentCat, currentCat } }}>{defaultDom}</Link>;
+          return <Link
+            to={{ pathname: menuItemProps.path, state: { parentCat, currentCat } }}
+            onContextMenu={(e) => handleOnContextMenu(e, currentCat)}>
+            {defaultDom} </Link>;
         }}
 
         itemRender={(route, params, routes, paths) => {
@@ -134,6 +155,15 @@ const BasicLayout: React.FC<BasicLayoutProps> = props => {
             })
           }
         </Authorized>
+        {categoryModalVisible ? (
+          <CategoryForm
+            onClose={() => {
+              handleCategoryModalVisible(false);
+            }}
+            initcialCat={categoryModalInitCat}
+            categoryModalVisible={categoryModalVisible}
+          />
+        ) : null}
       </ProLayout>
     </>
   );

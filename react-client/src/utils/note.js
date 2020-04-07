@@ -22,10 +22,10 @@ export function getCatRoutes(categories, categoryId) {
         'icon': IconComponent && <IconComponent />,
         path: (parentId === 0 ? 'articles/' : '') + name,
       }
-      const routes = getCatRoutes(categories, id)
-      if (routes.length > 0) {
+      const children = getCatRoutes(categories, id)
+      if (children.length > 0) {
         if (parseInt(used) === 1) {
-          routes.unshift({
+          children.unshift({
             'parent_id': parentId,
             'value': parseInt(id),
             'name': name,
@@ -34,7 +34,7 @@ export function getCatRoutes(categories, categoryId) {
             path: `${name}*`,
           })
         }
-        tmp.routes = routes
+        tmp.children = children
       }
       data.push(tmp)
     }

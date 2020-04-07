@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Form, Button, Input, Modal, Cascader, Popconfirm } from 'antd';
 import { PlusOutlined, MinusOutlined, CloseOutlined, CheckOutlined } from '@ant-design/icons';
 import './index.less'
@@ -13,6 +13,7 @@ export interface CategoryFormProps {
   catgoryData: Array<any>;
   menuList: Array<any>;
   dispatch: any;
+  initcialCat?: number | string | any
 }
 interface Category {
   name?: string
@@ -41,9 +42,10 @@ const CategoryForm: React.FC<CategoryFormProps> = (props) => {
     catgoryData,
     menuList,
     dispatch,
+    initcialCat,
   } = props;
 
-  const fetchCategory = (categoryId: number | string) => {
+  const fetchCategory = (categoryId: number | string | any) => {
     return menuList.find(item => item.id === categoryId) || {}
   }
 
@@ -70,7 +72,7 @@ const CategoryForm: React.FC<CategoryFormProps> = (props) => {
   }
 
   /**
-   * 更新分类内容
+   * 设置分类内容
    * @param content 
    */
   const handleSetCategory = (keyName: string, val: string | Array<string>): void => {
@@ -78,14 +80,25 @@ const CategoryForm: React.FC<CategoryFormProps> = (props) => {
       ...categoryDetail,
       [keyName]: val
     }
+    if (keyName === 'category') {
+      const categoryItem = fetchCategory(val)
+      const categories = getCategories(val, [], menuList || [])
+      const parentCategories = getCategories(categoryItem.parent_id, [], menuList || [])
+      newData = {
+        ...categoryItem,
+        categories,
+        parentCategories,
+      }
+    }
 
     if (keyName === 'categories') {
       const category = val[val.length - 1]
       const categoryItem = fetchCategory(category)
+      const categories = val
       const parentCategories = getCategories(categoryItem.parent_id, [], menuList || [])
       newData = {
-        ...newData,
         ...categoryItem,
+        categories,
         parentCategories,
       }
     }
@@ -111,8 +124,13 @@ const CategoryForm: React.FC<CategoryFormProps> = (props) => {
     setCategoryDetail(newData)
   };
 
+  useEffect(() => {
+    // 加载分类信息
+    handleSetCategory('category',initcialCat)
+  }, [initcialCat]);
+
+
   const renderContent = () => {
-    console.log(categoryDetail)
     return (
       <>
         <FormItem name="icon" label="图标">

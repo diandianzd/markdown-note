@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Row, Col, Menu, Input, Cascader, Button } from 'antd';
 import styles from './index.less';
 import ToastUi from '@/components/ToastUi';
-import { DeleteOutlined, SaveOutlined, PlusOutlined, RetweetOutlined } from '@ant-design/icons';
+import { DeleteOutlined, SaveOutlined, PlusOutlined, RetweetOutlined, EllipsisOutlined } from '@ant-design/icons';
 import { fetchList, fetchArticle, createArticle } from '@/services/articles';
 import classnames from 'classnames'
 import { getCategories } from '@/utils/note';
@@ -109,14 +109,17 @@ export default (props: any): React.ReactNode => {
                     mode="inline"
                     inlineCollapsed={collapsed}
                 >
-                    <Menu.Item key="-1" >
+                    <Menu.Item key="-n" >
                         <RetweetOutlined onClick={toggleCollapsed} className='collapsedBtn' />
                         <span onClick={handleNew}><PlusOutlined />添加页</span>
                     </Menu.Item>
                     {
                         postList.map(postDesc => {
                             return (
-                                <Menu.Item key={postDesc.id || -1} onClick={() => { handleArticle(postDesc.id) }}>{postDesc.title}</Menu.Item>
+                                <Menu.Item title={postDesc.title} key={postDesc.id || -1}
+                                    onClick={() => { handleArticle(postDesc.id) }}>
+                                    {postDesc.title || <EllipsisOutlined />}
+                                </Menu.Item>
                             )
                         })
                     }
@@ -125,7 +128,7 @@ export default (props: any): React.ReactNode => {
             <Col flex="auto">
                 <div className={styles.articleInner}>
                     <div className={styles.formHeader}>
-                        <Input value={article.title} className={styles.formHeaderInput} placeholder="标题"
+                        <Input value={article.title} title={article.title} className={styles.formHeaderInput} placeholder="标题"
                             onChange={(e: any) => handleSetArticle('title', e.target.value)} />
                         <Cascader options={catgoryData} expandTrigger="hover" placeholder="分类" changeOnSelect
                             value={article.categories}
