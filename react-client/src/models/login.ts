@@ -34,13 +34,13 @@ const Model: LoginModelType = {
   effects: {
     *login({ payload }, { call, put }) {
       const response = yield call(fakeAccountLogin, payload);
-      setToken(response.data.access_token)
-      yield put({
-        type: 'changeLoginStatus',
-        payload: response.data,
-      });
       // Login successfully
       if (response.code === 1) {
+        setToken(response.data.access_token)
+        yield put({
+          type: 'changeLoginStatus',
+          payload: response.data,
+        });
         const urlParams = new URL(window.location.href);
         const params = getPageQuery();
         let { redirect } = params as { redirect: string };

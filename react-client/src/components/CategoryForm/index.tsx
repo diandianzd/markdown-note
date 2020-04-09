@@ -135,7 +135,7 @@ const CategoryForm: React.FC<CategoryFormProps> = (props) => {
       <>
         <FormItem name="icon" label="图标">
           <div>
-            <Input placeholder="图标组件" value={categoryDetail.icon}
+            <Input placeholder="图标组件名称" value={categoryDetail.icon}
               onChange={(e: any) => handleSetCategory('icon', e.target.value)} />
           </div>
         </FormItem>

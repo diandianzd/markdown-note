@@ -3,8 +3,8 @@
  * 更详细的 api 文档: https://github.com/umijs/umi-request
  */
 import { extend } from 'umi-request';
-import { notification } from 'antd';
-import { getToken } from './auth';
+import { message } from 'antd';
+import { getToken, removeToken } from './auth';
 
 const codeMessage = {
   200: '服务器成功返回请求的数据。',
@@ -32,16 +32,9 @@ const errorHandler = (error: { response: Response }): Response => {
   if (response && response.status) {
     const errorText = codeMessage[response.status] || response.statusText;
     const { status, url } = response;
-
-    notification.error({
-      message: `请求错误 ${status}: ${url}`,
-      description: errorText,
-    });
+    message.error(`请求错误 ${status}: ${errorText} ${url}`);
   } else if (!response) {
-    notification.error({
-      description: '您的网络发生异常，无法连接服务器',
-      message: '网络异常',
-    });
+    message.error('您的网络发生异常，无法连接服务器');
   }
   return response;
 };
@@ -68,10 +61,13 @@ request.interceptors.request.use((url, options) => {
 // response拦截器, 处理response
 request.interceptors.response.use(async (response) => {
   const data = await response.clone().json();
-  if (data.code !== 1) {
-    // removeToken()
-    // window.location.href = '/';
-    // return Promise.reject(new Error('登录过期'))
+  if (data.code === 401) {
+    removeToken()
+    message.error(`登录过期 ${data.code}: ${data.message}`, 1, () => {
+      window.location.href = '/';
+    });
+  } else if (data.code !== 1) {
+    message.error(`请求错误 ${data.code}: ${data.message}`);
   }
   return response;
 });

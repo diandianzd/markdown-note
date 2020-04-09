@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { Row, Col, Menu, Input, Cascader, Button } from 'antd';
+import { Row, Col, Menu, Input, Cascader, Button, message } from 'antd';
 import styles from './index.less';
 import ToastUi from '@/components/ToastUi';
-import { DeleteOutlined, SaveOutlined, PlusOutlined, RetweetOutlined, EllipsisOutlined } from '@ant-design/icons';
+import { DeleteOutlined, SaveOutlined, PlusOutlined, EllipsisOutlined, SwapOutlined } from '@ant-design/icons';
 import { fetchList, fetchArticle, createArticle } from '@/services/articles';
 import classnames from 'classnames'
 import { getCategories } from '@/utils/note';
@@ -10,10 +10,12 @@ import { getCategories } from '@/utils/note';
 interface Article {
     title?: string
     content?: string
+    initialContent?: string
     id?: number
     category?: number | string
     categories?: Array<string>
     status?: string
+    changed?: boolean
 }
 
 export default (props: any): React.ReactNode => {
@@ -23,6 +25,7 @@ export default (props: any): React.ReactNode => {
     const [postList, setPostList] = useState<Array<any>>([])
     const { currentCat = -1 } = props.location && props.location.state || {}
     const { catgoryData, menuList } = props
+
 
     /**
      * 获取文章
@@ -35,17 +38,23 @@ export default (props: any): React.ReactNode => {
             const categories = getCategories(article.category, [], menuList || [])
             setArticle({
                 ...article,
-                categories
+                categories,
+                initialContent: article.content,
+                changed: false,
             })
         })
     }
     /**
      * 添加文章
      */
-    const handleNew = () => {
+    const handleNew = (): any => {
+        const hasUnSaved = postList.find(article => !article.id)
+        if (hasUnSaved) {
+            return message.error('有未保存的文章', 1)
+        }
         const categories = getCategories(currentCat, [], menuList || [])
         const category = categories.length > 0 ? categories[categories.length - 1] : -1
-        const newArticle = { categories, category }
+        const newArticle = { categories, category, initialContent: '', changed: false, }
         setArticle(newArticle)
         setPostList([
             newArticle,
@@ -59,10 +68,14 @@ export default (props: any): React.ReactNode => {
     const handleSetArticle = (keyName: string, val: string | Array<string>): void => {
         const newData = {
             ...article,
-            [keyName]: val
+            [keyName]: val,
+            changed: true,
         }
         if (keyName === 'categories') {
             newData.category = val[val.length - 1]
+        }
+        if (keyName === 'content' && newData.content === newData.initialContent) {
+            newData.changed = false
         }
         setArticle(newData)
     }
@@ -85,7 +98,8 @@ export default (props: any): React.ReactNode => {
         }).then(res => {
             setArticle({
                 ...article,
-                id: res.data.id
+                id: res.data.id,
+                changed: false,
             })
         })
     }
@@ -104,13 +118,13 @@ export default (props: any): React.ReactNode => {
             <Col>
                 <Menu
                     className={classnames('articleMenu', styles.articleMenu)}
-                    defaultSelectedKeys={['1']}
+                    defaultSelectedKeys={['n']}
                     defaultOpenKeys={['sub1']}
                     mode="inline"
                     inlineCollapsed={collapsed}
                 >
                     <Menu.Item key="-n" >
-                        <RetweetOutlined onClick={toggleCollapsed} className='collapsedBtn' />
+                        <SwapOutlined onClick={toggleCollapsed} className='collapsedBtn' />
                         <span onClick={handleNew}><PlusOutlined />添加页</span>
                     </Menu.Item>
                     {
@@ -118,7 +132,7 @@ export default (props: any): React.ReactNode => {
                             return (
                                 <Menu.Item title={postDesc.title} key={postDesc.id || -1}
                                     onClick={() => { handleArticle(postDesc.id) }}>
-                                    {postDesc.title || <EllipsisOutlined />}
+                                    {postDesc.title || '未命名'}
                                 </Menu.Item>
                             )
                         })
@@ -133,7 +147,8 @@ export default (props: any): React.ReactNode => {
                         <Cascader options={catgoryData} expandTrigger="hover" placeholder="分类" changeOnSelect
                             value={article.categories}
                             onChange={val => handleSetArticle('categories', val)} />
-                        <Button type="primary" icon={<SaveOutlined />} onClick={() => handlePublish()} />
+                        <Button type="primary" disabled={!article.changed} icon={<SaveOutlined />}
+                            onClick={() => handlePublish()} />
                         <Button type="dashed" icon={<DeleteOutlined />} />
                     </div>
                     <div>
