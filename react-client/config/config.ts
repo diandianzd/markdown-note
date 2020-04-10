@@ -66,6 +66,12 @@ export default defineConfig({
               component: './Articles',
             },
             {
+              path: '/search',
+              name: 'search',
+              icon: 'smile',
+              component: './Articles',
+            },
+            {
               path: '/articles/*',
               name: 'articles',
               icon: 'smile',

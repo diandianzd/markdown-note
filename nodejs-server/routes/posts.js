@@ -153,7 +153,7 @@ router.post('/list', async (req, res, next) => {
     if (!['modified', 'id'].includes(sort)) sort = 'modified';
     if (!['desc', 'asc'].includes(asc)) asc = 'desc';
 
-    if (content !== '') content = `%${content}%`;
+    if (content) content = `%${content}%`;
     if (!status) status = 'active';
 
     //  `select created,id,title,type,status,category from note_posts WHERE category = ? and status='active'`,

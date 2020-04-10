@@ -23,7 +23,8 @@ export default (props: any): React.ReactNode => {
     const [collapsed, setCollapsed] = useState(false)
     const [article, setArticle] = useState<Article>({})
     const [postList, setPostList] = useState<Array<any>>([])
-    const { currentCat = -1 } = props.location && props.location.state || {}
+    const { pathname } = props.location
+    const { currentCat = pathname === '/search' ? undefined : -1, content: searchContent = '' } = props.location && props.location.state || {}
     const { catgoryData, menuList } = props
 
 
@@ -83,8 +84,8 @@ export default (props: any): React.ReactNode => {
      * 获取文章列表
      * @param categoryId 
      */
-    const fetchPostList = (categoryId: number) => {
-        fetchList({ category: categoryId }).then(res => {
+    const fetchPostList = (category: number | null, content: string = '') => {
+        fetchList({ category, content }).then(res => {
             const { total, list } = res.data
             setPostList(list)
         })
@@ -110,8 +111,8 @@ export default (props: any): React.ReactNode => {
 
     useEffect(() => {
         // Update the document title using the browser API
-        fetchPostList(currentCat)
-    }, [currentCat]);
+        fetchPostList(currentCat, searchContent)
+    }, [currentCat, searchContent]);
 
     return (
         <Row className={styles.articleWrap}>

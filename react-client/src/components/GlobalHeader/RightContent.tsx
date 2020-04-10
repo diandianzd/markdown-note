@@ -1,7 +1,7 @@
 import { Tooltip } from 'antd';
 import { BlockOutlined } from '@ant-design/icons';
 import React, { useState } from 'react';
-import { connect, ConnectProps } from 'umi';
+import { connect, ConnectProps, history } from 'umi';
 import { ConnectState } from '@/models/connect';
 import HeaderSearch from '../HeaderSearch';
 import SettingDropdown from '../SettingDropdown';
@@ -31,15 +31,25 @@ const GlobalHeaderRight: React.SFC<GlobalHeaderRightProps> = (props) => {
         options={[
 
         ]}
-      // onSearch={value => {
-      //   //console.log('input', value);
-      // }}
+        onSearch={value => {
+          history.replace({
+            pathname: '/search',
+            state: {
+              currentCat: null,
+              content: value
+            },
+          });
+        }}
       />
       <Tooltip title="">
-        <BlockOutlined className={styles.action}/>
+        <BlockOutlined className={styles.action} onClick={() => {
+          history.replace({
+            pathname: '/welcome',
+          })
+        }} />
       </Tooltip>
       <SettingDropdown className={styles.action} />
-      
+
     </div>
   );
 };
