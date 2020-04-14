@@ -1,21 +1,15 @@
 import React from 'react';
 
-import 'codemirror/lib/codemirror.css' // Editor's Dependency Style
-import '@toast-ui/editor/dist/toastui-editor.css' // Editor's Style
-import './index.less'
+import 'codemirror/lib/codemirror.css'; // Editor's Dependency Style
+import '@toast-ui/editor/dist/toastui-editor.css'; // Editor's Style
+import './index.less';
 
-
-import Editor from '@toast-ui/editor'
+import Editor from '@toast-ui/editor';
 import defaultOptions from './default-options';
 
-
 class ToastUi extends React.Component {
-
   constructor(props) {
-    super(props)
-    this.state = {
-      content: ''
-    }
+    super(props);
   }
 
   rootEl = React.createRef();
@@ -26,27 +20,17 @@ class ToastUi extends React.Component {
     this.editorInst = new Editor({
       el: this.rootEl.current,
       ...defaultOptions,
-      ...this.props
+      ...this.props,
     });
-    /*     // 初始化value
-        this.setState({ content: this.props.value }, () => {
-          this.setValue(this.props.value)
-        }) */
     this.editorInst.on('change', () => {
-      const content = this.getValue()
-      if (content !== this.state.content) {
-        this.setState({ content }, () => {
-          this.props.onChange(content)
-        })
-      }
-    })
+      const content = this.getValue();
+      this.props.onChange(content);
+    });
   }
 
   shouldComponentUpdate(nextProps) {
-
     const instance = this.getInstance();
-    const { height, previewStyle, value: nextValue } = nextProps;
-
+    const { height, previewStyle, initialValue } = nextProps;
 
     if (this.props.height !== height) {
       instance.height(height);
@@ -55,12 +39,10 @@ class ToastUi extends React.Component {
     if (this.props.previewStyle !== previewStyle) {
       instance.changePreviewStyle(previewStyle);
     }
-    // 更新value
-    if (this.state.content !== nextValue
-      && nextValue !== this.props.value) {
-      this.setValue(nextValue)
+    // 加载内容
+    if (this.props.initialValue !== initialValue) {
+      this.setValue(initialValue);
     }
-
 
     return false;
   }
@@ -74,20 +56,20 @@ class ToastUi extends React.Component {
   }
 
   setValue(value) {
-    this.editorInst.setMarkdown(value)
+    this.editorInst.setMarkdown(value);
   }
 
   getValue() {
-    return this.editorInst.getMarkdown()
+    return this.editorInst.getMarkdown();
   }
 
   render() {
-    return <div className='toastUiWrap' ref={this.rootEl} />;
+    return <div className="toastUiWrap" ref={this.rootEl} />;
   }
 }
 ToastUi.defaultProps = {
   onChange: () => null,
   value: '',
-}
+};
 
-export default ToastUi
+export default ToastUi;

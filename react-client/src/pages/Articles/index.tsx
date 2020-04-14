@@ -27,13 +27,38 @@ export default (props: any): React.ReactNode => {
     const { currentCat = pathname === '/search' ? undefined : -1, content: searchContent = '' } = props.location && props.location.state || {}
     const { catgoryData, menuList } = props
 
-
     /**
-     * 获取文章
-     * @param postId 
+     * 添加文章
      */
+    const handleNew = (isNew: boolean = false): any => {
+
+        const categories = getCategories(currentCat, [], menuList || [])
+        const category = categories.length > 0 ? categories[categories.length - 1] : -1
+        const newArticle = { categories, category, initialContent: '', content: '', changed: false, }
+
+        if (isNew) {
+            const hasUnSaved = postList.find(article => !article.id)
+            if (hasUnSaved) {
+                return message.error('有未保存的文章', 1)
+            }
+            setPostList([
+                newArticle,
+                ...postList
+            ])
+        }
+        setArticle(newArticle)
+
+    }
+    /**
+    * 获取文章
+    * @param postId 
+    */
     const handleArticle = (postId: number): void => {
-        if (!postId) return
+        // 存在新创建的文章
+        if (!postId) {
+            handleNew(false)
+            return
+        }
         fetchArticle(postId).then(res => {
             const article = res.data
             const categories = getCategories(article.category, [], menuList || [])
@@ -44,23 +69,6 @@ export default (props: any): React.ReactNode => {
                 changed: false,
             })
         })
-    }
-    /**
-     * 添加文章
-     */
-    const handleNew = (): any => {
-        const hasUnSaved = postList.find(article => !article.id)
-        if (hasUnSaved) {
-            return message.error('有未保存的文章', 1)
-        }
-        const categories = getCategories(currentCat, [], menuList || [])
-        const category = categories.length > 0 ? categories[categories.length - 1] : -1
-        const newArticle = { categories, category, initialContent: '', changed: false, }
-        setArticle(newArticle)
-        setPostList([
-            newArticle,
-            ...postList
-        ])
     }
     /**
      * 更新文章内容
@@ -100,6 +108,7 @@ export default (props: any): React.ReactNode => {
             setArticle({
                 ...article,
                 id: res.data.id,
+                initialContent: article.content,
                 changed: false,
             })
         })
@@ -126,7 +135,7 @@ export default (props: any): React.ReactNode => {
                 >
                     <Menu.Item key="-n" >
                         <SwapOutlined onClick={toggleCollapsed} className='collapsedBtn' />
-                        <span onClick={handleNew}><PlusOutlined />添加页</span>
+                        <span onClick={() => handleNew(true)}><PlusOutlined />添加页</span>
                     </Menu.Item>
                     {
                         postList.map(postDesc => {
@@ -154,6 +163,7 @@ export default (props: any): React.ReactNode => {
                     </div>
                     <div>
                         <ToastUi
+                            initialValue={article.initialContent}
                             value={article.content}
                             onChange={(val: string) => handleSetArticle('content', val)}
                             height='calc(100vh - 80px)'
