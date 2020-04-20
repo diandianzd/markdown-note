@@ -64,7 +64,7 @@ router.post('/save', bodyParser.urlencoded({ extended: true }), async (req, res,
 
 router.post('/list', async (req, res, next) => {
   try {
-    const { limit = 20, page = 1 } = req.query;
+    const { limit = 15, page = 1 } = req.query;
     const offset = (page - 1) * limit;
     // select * from note_categories  order by id asc  limit ? offset ?
     const queryCount = await new DB().table('note_categories').select(['count(*) as total']).query(true);

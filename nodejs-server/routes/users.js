@@ -118,43 +118,4 @@ router.post('/login', bodyParser.urlencoded({ extended: true }), async (req, res
   }
 });
 
-router.post('/info', async (req, res, next) => {
-  try {
-    const queryPostCategories = await new DB().table('note_posts').select(['DISTINCT category']).query();
-    const postCatIds = queryPostCategories.reduce((pre, cur) => pre.concat(cur.category), []);
-
-    //    'select icon, id, name, parent_id from note_categories WHERE status = 1 order by modified desc'
-    const queryAllCategories = await new DB().table('note_categories')
-      .select(['icon', 'id', 'name', 'parent_id'])
-      .where({ status: 1 })
-      .orderBy('modified desc')
-      .query();
-
-    queryAllCategories.forEach((item, index) => {
-      if (postCatIds.includes(item.id)) {
-        queryAllCategories[index].used = 1;
-      } else {
-        queryAllCategories[index].used = 0;
-      }
-    });
-
-    res.send({
-      code: 1,
-      message: 'success',
-      data: {
-        id: -1,
-        categories: queryAllCategories,
-        roles: ['admin'],
-        introduction: 'I am a super administrator',
-        avatar: 'https://wpimg.wallstcn.com/f778738c-e4f8-4870-b634-56703b4acafe.gif',
-        name: 'Super Admin',
-      },
-    });
-  } catch (e) {
-    console.log(e);
-    res.send({ code: 0, message: '数据查询错误', data: null });
-  }
-});
-
-
 module.exports = router;

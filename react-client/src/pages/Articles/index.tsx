@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { Row, Col, Menu, Input, Cascader, Button, message } from 'antd';
-import styles from './index.less';
+import { Row, Col, Menu, Input, Cascader, Button, message, Pagination } from 'antd';
 import ToastUi from '@/components/ToastUi';
 import { DeleteOutlined, SaveOutlined, PlusOutlined, EllipsisOutlined, SwapOutlined } from '@ant-design/icons';
 import { fetchList, fetchArticle, createArticle } from '@/services/articles';
 import classnames from 'classnames'
 import { getCategories } from '@/utils/note';
+import styles from './index.less';
 
 interface Article {
     title?: string
@@ -23,9 +23,12 @@ export default (props: any): React.ReactNode => {
     const [collapsed, setCollapsed] = useState(false)
     const [article, setArticle] = useState<Article>({})
     const [postList, setPostList] = useState<Array<any>>([])
+    const [postListCount, setPostListCount] = useState(0)
+    const [postListCurrent, setPostListCurrent] = useState(1)
     const { pathname } = props.location
     const { currentCat = pathname === '/search' ? undefined : -1, content: searchContent = '' } = props.location && props.location.state || {}
     const { catgoryData, menuList } = props
+
 
     /**
      * 添加文章
@@ -92,12 +95,23 @@ export default (props: any): React.ReactNode => {
      * 获取文章列表
      * @param categoryId 
      */
-    const fetchPostList = (category: number | null, content: string = '') => {
-        fetchList({ category, content }).then(res => {
+    const fetchPostList = (category: number | null, content: string = '', page = 1) => {
+
+        setPostListCurrent(page)
+
+        fetchList({ category, content, page }).then(res => {
             const { total, list } = res.data
+            setPostListCount(total)
             setPostList(list)
         })
 
+    }
+
+    /**
+     * 分页列表
+     */
+    const handlePagination = (page: number) => {
+        fetchPostList(currentCat, searchContent, page)
     }
     //  发布
     const handlePublish = () => {
@@ -137,6 +151,7 @@ export default (props: any): React.ReactNode => {
                         <SwapOutlined onClick={toggleCollapsed} className='collapsedBtn' />
                         <span onClick={() => handleNew(true)}><PlusOutlined />添加页</span>
                     </Menu.Item>
+
                     {
                         postList.map(postDesc => {
                             return (
@@ -147,6 +162,15 @@ export default (props: any): React.ReactNode => {
                             )
                         })
                     }
+
+                    <Pagination className={styles.articlePagination}
+                        simple hideOnSinglePage
+                        defaultPageSize={15}
+                        current={postListCurrent}
+                        onChange={handlePagination}
+                        defaultCurrent={1} total={postListCount} />
+
+
                 </Menu>
             </Col>
             <Col flex="auto">

@@ -144,7 +144,7 @@ router.post('/delete', bodyParser.urlencoded({ extended: true }), async (req, re
 
 router.post('/list', async (req, res, next) => {
   try {
-    const { limit = 20, page = 1 } = req.query;
+    const { limit = 15, page = 1 } = req.query;
     const offset = (page - 1) * limit;
 
     let { content = '', status = 'active',category = -1 } = req.query;

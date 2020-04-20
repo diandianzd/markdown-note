@@ -52,7 +52,7 @@ const CategoryForm: React.FC<CategoryFormProps> = (props) => {
 
 
   const handleSubmit = () => {
-    saveCategory(categoryDetail).then(res => {
+    saveCategory(categoryDetail).then(() => {
       dispatch({
         type: 'menu/getMenuData',
       });
@@ -69,6 +69,7 @@ const CategoryForm: React.FC<CategoryFormProps> = (props) => {
       });
       handleUpdateModalVisible()
     })
+    return null
   }
 
   /**
@@ -114,7 +115,7 @@ const CategoryForm: React.FC<CategoryFormProps> = (props) => {
 
   const handleNew = () => {
     const { id, categories } = categoryDetail
-    let newData = {
+    const newData = {
       name: '',
       parent_id: id || 0,
       icon: '',
@@ -164,11 +165,11 @@ const CategoryForm: React.FC<CategoryFormProps> = (props) => {
       <>
         <Button shape="circle" icon={<CloseOutlined />}
           onClick={() => handleUpdateModalVisible(false)} />
-        {!categoryDetail.id ? <Button disabled={true} shape="circle" icon={<MinusOutlined />} /> :
+        {!categoryDetail.id ? <Button disabled shape="circle" icon={<MinusOutlined />} /> :
           <Popconfirm
             className='button'
             placement="topRight"
-            title={'删除分类吗'}
+            title="删除分类吗"
             onConfirm={handleDelete}
             okText="Yes"
             cancelText="No"
