@@ -149,26 +149,27 @@ export default (props: any): React.ReactNode => {
                 >
                     <Menu.Item key="-n" >
                         <SwapOutlined onClick={toggleCollapsed} className='collapsedBtn' />
-                        <span onClick={() => handleNew(true)}><PlusOutlined />添加页</span>
+                        {!collapsed && <span onClick={() => handleNew(true)}><PlusOutlined />添加页</span>}
                     </Menu.Item>
 
-                    {
-                        postList.map(postDesc => {
-                            return (
-                                <Menu.Item title={postDesc.title} key={postDesc.id || -1}
-                                    onClick={() => { handleArticle(postDesc.id) }}>
-                                    {postDesc.title || '未命名'}
-                                </Menu.Item>
-                            )
-                        })
+                    {postList.map(postDesc => {
+                        return (
+                            <Menu.Item title={postDesc.title} key={postDesc.id || -1}
+                                onClick={() => { handleArticle(postDesc.id) }}>
+                                {postDesc.title || (postDesc.id ? `无标题页 - ${new Date(parseInt(postDesc.created, 10) * 1000).toLocaleString()}` : '未保存')}
+                            </Menu.Item>
+                        )
+                    })
+                    }
+                    {!collapsed &&
+                        <Pagination className={styles.articlePagination}
+                            simple hideOnSinglePage
+                            defaultPageSize={15}
+                            current={postListCurrent}
+                            onChange={handlePagination}
+                            defaultCurrent={1} total={postListCount} />
                     }
 
-                    <Pagination className={styles.articlePagination}
-                        simple hideOnSinglePage
-                        defaultPageSize={15}
-                        current={postListCurrent}
-                        onChange={handlePagination}
-                        defaultCurrent={1} total={postListCount} />
 
 
                 </Menu>

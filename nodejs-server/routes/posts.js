@@ -30,7 +30,9 @@ router.post('/view', async (req, res, next) => {
   const id = parseInt(req.query.id || 0, 10);
   // 'select * from note_posts where id = ?',
   try {
-    const post = await new DB().table('note_posts').where({ id }).query(true);
+    const post = await new DB().table('note_posts')
+    .select(['id', 'title', 'content', 'modified', 'created', 'status', 'category'])
+    .where({ id }).query(true);
     res.send({
       code: 1,
       message: 'success',
@@ -41,7 +43,6 @@ router.post('/view', async (req, res, next) => {
     res.send({ code: 0, message: '数据查询错误', data: null });
   }
 });
-
 
 router.post('/property', bodyParser.urlencoded({ extended: true }), async (req, res, next) => {
   try {
@@ -144,7 +145,7 @@ router.post('/delete', bodyParser.urlencoded({ extended: true }), async (req, re
 
 router.post('/list', async (req, res, next) => {
   try {
-    const { limit = 15, page = 1 } = req.query;
+    const { limit = 20, page = 1 } = req.query;
     const offset = (page - 1) * limit;
 
     let { content = '', status = 'active',category = -1 } = req.query;
