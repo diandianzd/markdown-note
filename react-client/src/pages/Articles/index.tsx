@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Row, Col, Menu, Input, Cascader, Button, message, Pagination } from 'antd';
 import ToastUi from '@/components/ToastUi';
-import { DeleteOutlined, SaveOutlined, PlusOutlined, EllipsisOutlined, SwapOutlined } from '@ant-design/icons';
+import { DeleteOutlined, SaveOutlined, PlusOutlined, SwapOutlined } from '@ant-design/icons';
 import { fetchList, fetchArticle, createArticle } from '@/services/articles';
 import classnames from 'classnames'
 import { getCategories } from '@/utils/note';
@@ -40,7 +40,7 @@ export default (props: any): React.ReactNode => {
         const newArticle = { categories, category, initialContent: '', content: '', changed: false, }
 
         if (isNew) {
-            const hasUnSaved = postList.find(article => !article.id)
+            const hasUnSaved = postList.find(item => !item.id)
             if (hasUnSaved) {
                 return message.error('有未保存的文章', 1)
             }
@@ -50,7 +50,7 @@ export default (props: any): React.ReactNode => {
             ])
         }
         setArticle(newArticle)
-
+        return null;
     }
     /**
     * 获取文章
@@ -63,12 +63,12 @@ export default (props: any): React.ReactNode => {
             return
         }
         fetchArticle(postId).then(res => {
-            const article = res.data
-            const categories = getCategories(article.category, [], menuList || [])
+            const articleDetail = res.data
+            const categories = getCategories(articleDetail.category, [], menuList || [])
             setArticle({
-                ...article,
+                ...articleDetail,
                 categories,
-                initialContent: article.content,
+                initialContent: articleDetail.content,
                 changed: false,
             })
         })
