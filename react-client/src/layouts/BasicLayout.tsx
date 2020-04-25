@@ -11,9 +11,9 @@ import Authorized from '@/utils/Authorized';
 import RightContent from '@/components/GlobalHeader/RightContent';
 import { ConnectState } from '@/models/connect';
 import { getAuthorityFromRouter } from '@/utils/utils';
-import logo from '../assets/logo.svg';
 import { UpCircleOutlined } from '@ant-design/icons';
 import CategoryForm from '@/components/CategoryForm';
+import logo from '../assets/logo.svg';
 
 const noMatch = (
   <Result
@@ -76,8 +76,8 @@ const BasicLayout: React.FC<BasicLayoutProps> = props => {
 
   /**
    * 右键点击菜单
-   * @param e 
-   * @param catData 
+   * @param e
+   * @param catData
    */
   const handleOnContextMenu = (e: any, currentCat: string) => {
     e.preventDefault()

@@ -3,10 +3,10 @@ import { Menu } from 'antd';
 import { ClickParam } from 'antd/es/menu';
 import React, { useState } from 'react';
 import classNames from 'classnames';
-import HeaderDropdown from '../HeaderDropdown';
-import styles from './index.less';
 import { connect } from 'umi';
 import { ConnectState } from '@/models/connect';
+import HeaderDropdown from '../HeaderDropdown';
+import styles from './index.less';
 import CategoryForm from '../CategoryForm';
 
 interface SettingDropdownProps {

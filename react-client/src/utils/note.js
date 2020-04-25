@@ -47,14 +47,14 @@ export function getCatChildren(categories, categoryId) {
   if (categories.length === 0) return []
   const data = []
   for (let i = 0; i < categories.length; i++) {
-    if (categories[i]['parent_id'] === categoryId) {
+    if (categories[i].parent_id === categoryId) {
       const tmp = {
-        'parent_id': parseInt(categories[i]['parent_id']),
-        'value': parseInt(categories[i]['id']),
-        'label': categories[i]['name'],
+        'parent_id': parseInt(categories[i].parent_id),
+        'value': parseInt(categories[i].id),
+        'label': categories[i].name,
       }
-      const children = getCatChildren(categories, categories[i]['id'])
-      if (children.length > 0) tmp['children'] = children
+      const children = getCatChildren(categories, categories[i].id)
+      if (children.length > 0) tmp.children = children
       data.push(tmp)
     }
   }

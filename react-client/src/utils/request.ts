@@ -54,7 +54,7 @@ request.interceptors.request.use((url, options) => {
   const token = getToken()
   const data = { ...options.data, t: token }
   return (
-    { url: url, options: { ...options, data } }
+    { url, options: { ...options, data } }
   );
 })
 

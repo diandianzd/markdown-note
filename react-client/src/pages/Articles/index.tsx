@@ -164,7 +164,7 @@ export default (props: any): React.ReactNode => {
                     {!collapsed &&
                         <Pagination className={styles.articlePagination}
                             simple hideOnSinglePage
-                            defaultPageSize={15}
+                            defaultPageSize={20}
                             current={postListCurrent}
                             onChange={handlePagination}
                             defaultCurrent={1} total={postListCount} />

@@ -3,8 +3,8 @@ import { Helmet, HelmetProvider } from 'react-helmet-async';
 import { Link, ConnectProps, connect } from 'umi';
 import React from 'react';
 import { ConnectState } from '@/models/connect';
-import styles from './UserLayout.less';
 import { ShopOutlined } from '@ant-design/icons';
+import styles from './UserLayout.less';
 
 export interface UserLayoutProps extends Partial<ConnectProps> {
   breadcrumbNameMap: {
@@ -39,8 +39,7 @@ const UserLayout: React.FC<UserLayoutProps> = props => {
       </Helmet>
 
       <div className={styles.container}>
-        <div className={styles.lang}>
-        </div>
+        <div className={styles.lang} />
         <div className={styles.content}>
           <div className={styles.top}>
             <div className={styles.header}>
@@ -55,7 +54,7 @@ const UserLayout: React.FC<UserLayoutProps> = props => {
         </div>
         <DefaultFooter
           links={[]}
-          copyright={'2020 diandianzd'}
+          copyright="2020 diandianzd"
         />
       </div>
     </HelmetProvider>

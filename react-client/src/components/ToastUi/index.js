@@ -39,8 +39,8 @@ class ToastUi extends React.Component {
     if (this.props.previewStyle !== previewStyle) {
       instance.changePreviewStyle(previewStyle);
     }
-    // 加载内容
-    if (this.props.initialValue !== initialValue) {
+    // 加载内容  避免重复初始化
+    if (this.props.initialValue !== initialValue && this.props.value !== initialValue) {
       this.setValue(initialValue);
     }
 
