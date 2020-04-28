@@ -117,6 +117,7 @@ export default (props: any): React.ReactNode => {
   //  发布
   const handlePublish = () => {
     const { id = null, title, content, category } = article;
+    if (!content) return
     createArticle({
       id, title, content, category,
     }).then(res => {
@@ -191,7 +192,7 @@ export default (props: any): React.ReactNode => {
             <Cascader options={categoryData} expandTrigger="hover" placeholder="分类" changeOnSelect
                       value={article.categories}
                       onChange={val => handleSetArticle('categories', val)}/>
-            <Button type="primary" disabled={!article.changed} icon={<SaveOutlined/>}
+            <Button type="primary" disabled={!article.changed || !(article.content||'').trim()} icon={<SaveOutlined/>}
                     onClick={() => handlePublish()}/>
             <Popconfirm
               className='button'

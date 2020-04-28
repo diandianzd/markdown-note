@@ -23,15 +23,36 @@ app.getNetIp = function (_http) {
     return ipArray[0];
   } // 获取不到时
   if (typeof _http.ip === 'function') {
-      return _http.ip().substring(_http.ip().lastIndexOf(':') + 1);
-    }else{
-      return '-1'
-    }
-
+    return _http.ip()
+      .substring(_http.ip()
+        .lastIndexOf(':') + 1);
+  }
+  return '-1';
 };
 
 app.timestamp = function () {
   return parseInt(new Date().getTime() / 1000, 10);
+};
+
+
+// eslint-disable-next-line consistent-return
+app.checkCategoryValid = function (categories, id, parentId) {
+  if (id === parentId) return false;
+  const categoryMap = {};
+  categories.forEach((item) => {
+    categoryMap[item.id] = parseInt(item.parent_id);
+  });
+
+  let cursorId = parseInt(parentId);
+  let whileCount = 0;
+  while (true) {
+    whileCount += 1;
+    cursorId = categoryMap[cursorId];
+    if (cursorId === parseInt(id)) return false;
+    if (whileCount > 20) return false;
+    if (cursorId === -1 || cursorId === 0) return true;
+    if (!cursorId) return true;
+  }
 };
 
 module.exports = app;

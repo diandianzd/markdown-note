@@ -3,6 +3,7 @@ const express = require('express');
 const router = express.Router();
 const bodyParser = require('body-parser');
 const DB = require('../vendor/database/mysql');
+const helper = require('../vendor/helper');
 
 router.post('/delete', bodyParser.urlencoded({ extended: true }), async (req, res, next) => {
   // `UPDATE note_categories set status=0  WHERE id = ?`
@@ -41,6 +42,15 @@ router.post('/save', bodyParser.urlencoded({ extended: true }), async (req, res,
     };
     let rs = null;
     if (id > 0) {
+      // eslint-disable-next-line camelcase
+      const queryAllCategories = await new DB().table('note_categories')
+        .select(['id', 'parent_id'])
+        .where({ status: 1 })
+        .orderBy('modified desc')
+        .query();
+      if (!helper.checkCategoryValid(queryAllCategories, id,parent_id)) {
+        return res.send({ code: 0, message: '分类选择错误', data: null });
+      }
       rs = await new DB().table('note_categories').where({ id }).update(params);
       res.send({
         code: 1,

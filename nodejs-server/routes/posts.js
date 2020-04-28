@@ -31,8 +31,9 @@ router.post('/view', async (req, res, next) => {
   // 'select * from note_posts where id = ?',
   try {
     const post = await new DB().table('note_posts')
-    .select(['id', 'title', 'content', 'modified', 'created', 'status', 'category'])
-    .where({ id }).query(true);
+      .select(['id', 'title', 'content', 'modified', 'created', 'status', 'category'])
+      .where({ id })
+      .query(true);
     res.send({
       code: 1,
       message: 'success',
@@ -48,13 +49,15 @@ router.post('/save', bodyParser.urlencoded({ extended: true }), async (req, res,
   // INSERT INTO note_posts set  status="active", type="markdown", title=? , content=? , category=?, modified= 1558938981, created= 1558938981
   try {
     const {
-      title, content, id, type,
+      title, content = '', id, type,
     } = req.body;
-    const category = req.body.category || -1
+    const category = req.body.category || -1;
     const curTime = Math.ceil(new Date().getTime() / 1000);
     // 替换图片内容为 [img] 减少内容搜索
     const contentFilter = content.replace(/!\[.*\]\(.*?\)|"data:image\/.*?base64.*?"/mg, '[img]');
-
+    if (!content || !content.trim()) {
+      return res.send({ code: 0, message: '文章没有内容', data: null });
+    }
     const params = {
       status: 'active',
       title,
@@ -119,7 +122,7 @@ router.post('/list', async (req, res, next) => {
     const { limit = 20, page = 1 } = req.query;
     const offset = (page - 1) * limit;
 
-    let { content = '', status = 'active',category = null } = req.query;
+    let { content = '', status = 'active', category = null } = req.query;
     let { sort = 'modified', asc = 'desc' } = req.query;
     // verify values
     if (!['modified', 'id'].includes(sort)) sort = 'modified';
@@ -131,11 +134,11 @@ router.post('/list', async (req, res, next) => {
     //  `select created,id,title,type,status,category from note_posts WHERE category = ? and status='active'`,
     const queryCount = await new DB().table('note_posts').select(['count(*) as total'])
       .where({ status })
-      .where({ category: category, content_filter: ['like', content] }, true)
+      .where({ category, content_filter: ['like', content] }, true)
       .query(true);
     const queryList = await new DB().table('note_posts').select(['created', 'id', 'title', 'type', 'status', 'category'])
       .where({ status })
-      .where({ category: category, content_filter: ['like', content] }, true)
+      .where({ category, content_filter: ['like', content] }, true)
       .orderBy(`${sort} ${asc}`)
       .limit(limit)
       .offset(offset)
