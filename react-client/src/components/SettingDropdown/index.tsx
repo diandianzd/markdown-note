@@ -1,13 +1,15 @@
-import { GlobalOutlined, LogoutOutlined, SettingOutlined, BlockOutlined } from '@ant-design/icons';
+import { LogoutOutlined, SettingOutlined, BlockOutlined, DeleteOutlined } from '@ant-design/icons';
 import { Menu } from 'antd';
 import { ClickParam } from 'antd/es/menu';
 import React, { useState } from 'react';
 import classNames from 'classnames';
 import { connect } from 'umi';
 import { ConnectState } from '@/models/connect';
+import { history } from '@@/core/history';
 import HeaderDropdown from '../HeaderDropdown';
 import styles from './index.less';
 import CategoryForm from '../CategoryForm';
+
 
 interface SettingDropdownProps {
   className?: string;
@@ -31,19 +33,28 @@ const SettingDropdown: React.FC<SettingDropdownProps> = (props) => {
       return;
     }
     if (key === 'category') {
-      handleCategoryModalVisible(true)
+      handleCategoryModalVisible(true);
+    }
+    if (key === 'recycle-bin') {
+      history.push({
+        pathname: '/recycle-bin',
+      });
     }
   };
 
   const settingMenu = (
     <Menu className={styles.menu} onClick={onMenuClick}>
       <Menu.Item key="logout">
-        <LogoutOutlined />
-          退出登录
-        </Menu.Item>
+        <LogoutOutlined/>
+        退出登录
+      </Menu.Item>
       <Menu.Item key="category">
-        <BlockOutlined />
-          配置分类
+        <BlockOutlined/>
+        配置分类
+      </Menu.Item>
+      <Menu.Item key="recycle-bin">
+        <DeleteOutlined/>
+        回收站
       </Menu.Item>
 
     </Menu>
@@ -52,7 +63,7 @@ const SettingDropdown: React.FC<SettingDropdownProps> = (props) => {
     <>
       <HeaderDropdown overlay={settingMenu} placement="bottomRight">
         <span className={classNames(styles.dropDown, className)}>
-          <SettingOutlined title="设置" />
+          <SettingOutlined title="设置"/>
         </span>
       </HeaderDropdown>
       {categoryModalVisible ? (

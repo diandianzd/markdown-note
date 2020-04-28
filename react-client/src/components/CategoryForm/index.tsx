@@ -10,7 +10,7 @@ import { saveCategory, deleteCategory } from '@/services/categories';
 export interface CategoryFormProps {
   onClose: (flag?: boolean) => void;
   categoryModalVisible: boolean;
-  catgoryData: Array<any>;
+  categoryData: Array<any>;
   menuList: Array<any>;
   dispatch: any;
   initcialCat?: number | string | any
@@ -39,7 +39,7 @@ const CategoryForm: React.FC<CategoryFormProps> = (props) => {
   const {
     onClose: handleUpdateModalVisible,
     categoryModalVisible,
-    catgoryData,
+    categoryData,
     menuList,
     dispatch,
     initcialCat,
@@ -74,7 +74,7 @@ const CategoryForm: React.FC<CategoryFormProps> = (props) => {
 
   /**
    * 设置分类内容
-   * @param content 
+   * @param content
    */
   const handleSetCategory = (keyName: string, val: string | Array<string>): void => {
     let newData = {
@@ -144,14 +144,14 @@ const CategoryForm: React.FC<CategoryFormProps> = (props) => {
           <div style={{ display: 'flex' }}>
             <Input placeholder="请输入" value={categoryDetail.name}
               onChange={(e: any) => handleSetCategory('name', e.target.value)} />
-            <Cascader options={catgoryData} expandTrigger="hover" placeholder="选择" changeOnSelect
+            <Cascader options={categoryData} expandTrigger="hover" placeholder="选择" changeOnSelect
               value={categoryDetail.categories}
               onChange={val => handleSetCategory('categories', val)} />
           </div>
         </FormItem>
         <FormItem name="template" label="分类" >
           <div>
-            <Cascader options={catgoryData} expandTrigger="hover" placeholder="选择" changeOnSelect
+            <Cascader options={categoryData} expandTrigger="hover" placeholder="选择" changeOnSelect
               value={categoryDetail.parentCategories}
               onChange={val => handleSetCategory('parentCategories', val)} />
           </div>
@@ -206,6 +206,6 @@ const CategoryForm: React.FC<CategoryFormProps> = (props) => {
   );
 };
 export default connect(({ menu }: ConnectState) => ({
-  catgoryData: menu.catgoryData,
+  categoryData: menu.categoryData,
   menuList: menu.menuList,
 }))(CategoryForm);

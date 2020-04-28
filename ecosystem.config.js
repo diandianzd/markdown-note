@@ -24,7 +24,7 @@ module.exports = {
       ref  : 'origin/deploy',
       repo : 'https://github.com/diandianzd/markdown-note.git',
       path : '/home/markdown-note',
-      'post-deploy' : 'cd nodejs-server && sudo npm install && cd .. && pm2 reload ecosystem.config.js --env production'
+      'post-deploy' : 'git pull && cd nodejs-server && sudo npm install && cd .. && pm2 reload ecosystem.config.js --env production'
     }
   }
 };

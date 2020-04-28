@@ -62,13 +62,16 @@ export default defineConfig({
             {
               path: '/welcome',
               name: 'welcome',
-              icon: 'smile',
+              component: './Articles',
+            },
+            {
+              path: '/recycle-bin',
+              name: 'recycle-bin',
               component: './Articles',
             },
             {
               path: '/search',
               name: 'search',
-              icon: 'smile',
               component: './Articles',
             },
             {

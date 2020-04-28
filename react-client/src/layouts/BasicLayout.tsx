@@ -4,14 +4,13 @@
  * https://github.com/ant-design/ant-design-pro-layout
  */
 import ProLayout, { MenuDataItem, BasicLayoutProps as ProLayoutProps, Settings } from '@ant-design/pro-layout';
-import React, { useEffect, ReactElement, useState } from 'react';
+import React, { useEffect,  useState } from 'react';
 import { Link, connect, Dispatch } from 'umi';
 import { Result, Button } from 'antd';
 import Authorized from '@/utils/Authorized';
 import RightContent from '@/components/GlobalHeader/RightContent';
 import { ConnectState } from '@/models/connect';
 import { getAuthorityFromRouter } from '@/utils/utils';
-import { UpCircleOutlined } from '@ant-design/icons';
 import CategoryForm from '@/components/CategoryForm';
 import logo from '../assets/logo.svg';
 
@@ -35,7 +34,7 @@ export interface BasicLayoutProps extends ProLayoutProps {
     authority: string[];
   };
   menuList: Array<any>
-  catgoryData: Array<any>;
+  categoryData: Array<any>;
   settings: Settings;
   dispatch: Dispatch;
 }
@@ -149,7 +148,7 @@ const BasicLayout: React.FC<BasicLayoutProps> = props => {
           {
             React.Children.map(children, (child: any) => {
               return React.cloneElement(child, {
-                catgoryData: props.catgoryData,
+                categoryData: props.categoryData,
                 menuList: props.menuList,
               });
             })
@@ -173,6 +172,6 @@ export default connect(({ global, settings, menu }: ConnectState) => ({
   collapsed: global.collapsed,
   menuList: menu.menuList,
   menuData: menu.menuData,
-  catgoryData: menu.catgoryData,
+  categoryData: menu.categoryData,
   settings,
 }))(BasicLayout);

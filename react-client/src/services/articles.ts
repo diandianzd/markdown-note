@@ -26,10 +26,3 @@ export async function createArticle(data: any) {
         data
     })
 }
-
-export async function updateArticle(data: any) {
-    return request('/api/posts/property', {
-        method: 'POST',
-        data
-    })
-}

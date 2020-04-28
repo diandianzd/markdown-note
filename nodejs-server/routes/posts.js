@@ -44,35 +44,6 @@ router.post('/view', async (req, res, next) => {
   }
 });
 
-router.post('/property', bodyParser.urlencoded({ extended: true }), async (req, res, next) => {
-  try {
-    const {
-      title, id, type, status,
-    } = req.body;
-    const category = req.body.category || -1
-
-
-    const rs = await new DB().table('note_posts')
-      .where({ id })
-      .update({
-        status,
-        type: 'markdown',
-        title,
-        category,
-        modified: Math.ceil(new Date().getTime() / 1000),
-      });
-    console.log(rs);
-    res.send({
-      code: 1,
-      message: 'success',
-      data: { id: rs.insertId, isNewPost: 1 },
-    });
-  } catch (e) {
-    console.log(e);
-    res.send({ code: 0, message: '数据查询错误', data: null });
-  }
-});
-
 router.post('/save', bodyParser.urlencoded({ extended: true }), async (req, res, next) => {
   // INSERT INTO note_posts set  status="active", type="markdown", title=? , content=? , category=?, modified= 1558938981, created= 1558938981
   try {
@@ -148,7 +119,7 @@ router.post('/list', async (req, res, next) => {
     const { limit = 20, page = 1 } = req.query;
     const offset = (page - 1) * limit;
 
-    let { content = '', status = 'active',category = -1 } = req.query;
+    let { content = '', status = 'active',category = null } = req.query;
     let { sort = 'modified', asc = 'desc' } = req.query;
     // verify values
     if (!['modified', 'id'].includes(sort)) sort = 'modified';

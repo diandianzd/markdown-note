@@ -7,7 +7,7 @@ import { getCatRoutes, deepClone, getCatChildren } from '@/utils/note';
 export interface MenuModelState {
     [x: string]: any;
     menuData: any[]
-    catgoryData: any[]
+    categoryData: any[]
 }
 
 export interface MenuModelType {
@@ -25,29 +25,29 @@ const MenuModel: MenuModelType = {
     namespace: 'menu',
     state: {
         menuData: [],
-        catgoryData: [],
+        categoryData: [],
     },
     effects: {
         *getMenuData(_, { call, put }) {
             const response = yield call(getMenuData);
             const menuList = deepClone(response.data || []);
             const menuData = getCatRoutes(deepClone(response.data || []), 0);
-            const catgoryData = getCatChildren(deepClone(response.data || []), 0);
+            const categoryData = getCatChildren(deepClone(response.data || []), 0);
             yield put({
                 type: 'save',
-                payload: [menuList, menuData, catgoryData],
+                payload: [menuList, menuData, categoryData],
             });
         },
     },
 
     reducers: {
         save(state, action) {
-            const [menuList, menuData, catgoryData] = action.payload
+            const [menuList, menuData, categoryData] = action.payload
             return {
                 ...state,
                 menuList: menuList || [],
                 menuData: menuData || [],
-                catgoryData: catgoryData || [],
+                categoryData: categoryData || [],
             };
         },
     },
