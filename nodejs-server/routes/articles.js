@@ -68,6 +68,11 @@ router.post('/save', bodyParser.urlencoded({ extended: true }), async (req, res,
       modified: curTime,
     };
 
+    if (category !== -1){
+      const existCategoryId = await new DB().table('note_categories').where({ id:category }).query(true);
+      if (!existCategoryId) return res.send({ code: 0, message: '分类不存在', data: null });
+    }
+
     let rs = null;
     let rsData = null;
     if (id > 0) {
@@ -104,7 +109,7 @@ router.post('/delete', bodyParser.urlencoded({ extended: true }), async (req, re
     const id = parseInt(req.body.id || 0);
     const rs = await new DB().table('note_posts')
       .where({ id })
-      .update({ status: 'deleted' });
+      .update({ status: 'deleted',category: -1 });
     console.log(rs);
     res.send({
       code: 1,
