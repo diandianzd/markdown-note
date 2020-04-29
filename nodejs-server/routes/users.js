@@ -15,7 +15,7 @@ function verifySms(user, code) {
       resolve();
     } else {
       const timestamp = helper.timestamp();
-      if (timestamp > user.mobile_code_expire || parseInt(code, 10) !== parseInt(user.mobile_code, 10)) {
+      if (timestamp > user.mobile_code_expire || parseInt(code) !== parseInt(user.mobile_code)) {
         const sms = new AliSms(config.aliDaYu);
         const sendCode = Math.floor(Math.random() * (90000)) + 10000;
         sms.sendCode(user.mobile, sendCode).then(async (result) => {

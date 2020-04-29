@@ -27,7 +27,7 @@ function logHistory(post) {
 }
 
 router.post('/view', async (req, res, next) => {
-  const id = parseInt(req.query.id || 0, 10);
+  const id = parseInt(req.query.id || 0);
   // 'select * from note_posts where id = ?',
   try {
     const post = await new DB().table('note_posts')
@@ -101,7 +101,7 @@ router.post('/save', bodyParser.urlencoded({ extended: true }), async (req, res,
 router.post('/delete', bodyParser.urlencoded({ extended: true }), async (req, res, next) => {
   // ``UPDATE note_posts set status="deleted"  WHERE id = ?`,
   try {
-    const id = parseInt(req.body.id || 0, 10);
+    const id = parseInt(req.body.id || 0);
     const rs = await new DB().table('note_posts')
       .where({ id })
       .update({ status: 'deleted' });

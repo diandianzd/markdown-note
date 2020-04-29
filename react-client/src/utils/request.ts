@@ -28,13 +28,19 @@ const codeMessage = {
  * 异常处理程序
  */
 const errorHandler = (error: { response: Response }): Response => {
-  const { response } = error;
+
+  // @ts-ignore
+  const { response,message:apiMessage } = error;
   if (response && response.status) {
     const errorText = codeMessage[response.status] || response.statusText;
     const { status, url } = response;
-    message.error(`请求错误 ${status}: ${errorText} ${url}`);
+    const errString = `请求错误 ${status}: ${errorText} ${url}`
+    message.error(errString);
+    throw errString
   } else if (!response) {
-    message.error('您的网络发生异常，无法连接服务器');
+    const errString = apiMessage || '您的网络发生异常，无法连接服务器'
+    message.error(errString);
+    throw errString
   }
   return response;
 };
@@ -63,11 +69,12 @@ request.interceptors.response.use(async (response) => {
   const data = await response.clone().json();
   if (data.code === 401) {
     removeToken()
-    message.error(`登录过期 ${data.code}: ${data.message}`, 1, () => {
+    setTimeout(()=>{
       window.location.href = '/';
-    });
+    },1000)
+    throw data
   } else if (data.code !== 1) {
-    message.error(`请求错误 ${data.code}: ${data.message}`);
+    throw data
   }
   return response;
 });

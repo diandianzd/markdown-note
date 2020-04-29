@@ -8,7 +8,7 @@ const helper = require('../vendor/helper');
 router.post('/delete', bodyParser.urlencoded({ extended: true }), async (req, res, next) => {
   // `UPDATE note_categories set status=0  WHERE id = ?`
   try {
-    const id = parseInt(req.body.id || 0, 10);
+    const id = parseInt(req.body.id || 0);
     const childCategoryExist = await new DB().table('note_categories').where({ status: 1, parent_id: id }).query(true);
     if (childCategoryExist) {
       return res.send({ code: 0, message: '请先删除子分类', data: null });
@@ -34,7 +34,7 @@ router.post('/delete', bodyParser.urlencoded({ extended: true }), async (req, re
 router.post('/save', bodyParser.urlencoded({ extended: true }), async (req, res, next) => {
   // ``UPDATE note_categories set  status=1, name=? , icon=? , parent_id=?, modified= 1558938981, created= 1558938981 WHERE id = ?`
   try {
-    const id = parseInt(req.body.id || 0, 10);
+    const id = parseInt(req.body.id || 0)
     const { name, icon, parent_id = 0 } = req.body;
     const curTime = Math.ceil(new Date().getTime() / 1000);
     const params = {
@@ -66,29 +66,6 @@ router.post('/save', bodyParser.urlencoded({ extended: true }), async (req, res,
       });
     }
     console.log(rs);
-  } catch (e) {
-    console.log(e);
-    res.send({ code: 0, message: '数据查询错误', data: null });
-  }
-});
-
-router.post('/list', async (req, res, next) => {
-  try {
-    const { limit = 20, page = 1 } = req.query;
-    const offset = (page - 1) * limit;
-    // select * from note_categories  order by id asc  limit ? offset ?
-    const queryCount = await new DB().table('note_categories').select(['count(*) as total']).query(true);
-    const queryList = await new DB().table('note_categories').orderBy('id asc').limit(limit)
-      .offset(offset)
-      .query();
-    res.send({
-      code: 1,
-      message: 'success',
-      data: {
-        list: queryList,
-        total: queryCount.total,
-      },
-    });
   } catch (e) {
     console.log(e);
     res.send({ code: 0, message: '数据查询错误', data: null });
