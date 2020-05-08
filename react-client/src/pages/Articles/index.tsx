@@ -121,17 +121,32 @@ export default (props: any): React.ReactNode => {
     createArticle({
       id, title, content, category,
     }).then(res => {
+      const { isNewPost, id } = res.data
+      const { content, title, category } = article
       setArticle({
         ...article,
-        id: res.data.id,
-        initialContent: article.content,
+        id,
+        initialContent: content,
         changed: false,
       });
+      // 更新当前分类列表
+      const newList = postList.slice()
+      let hasIndex = -1
+      if (isNewPost) {
+        hasIndex = newList.length > 0 && !newList[0].id ? 0 : -1
+      } else {
+        hasIndex = postList.findIndex(item => item.id === id);
+      }
+      if (hasIndex > -1 && category === currentCat) {
+        newList[hasIndex].id = id
+        newList[hasIndex].title = title
+        setPostList(newList)
+      }
     });
   };
   // 删除
-  const handleDelete = ()=>{
-    const { id =null} = article;
+  const handleDelete = () => {
+    const { id = null } = article;
     deleteArticle(id).then(() => {
       fetchPostList(currentCat, searchContent);
     });
@@ -157,28 +172,28 @@ export default (props: any): React.ReactNode => {
           inlineCollapsed={collapsed}
         >
           <Menu.Item key="-n">
-            <SwapOutlined onClick={toggleCollapsed} className='collapsedBtn'/>
-            {!collapsed && <span onClick={() => handleNew(true)}><PlusOutlined/>添加页</span>}
+            <SwapOutlined onClick={toggleCollapsed} className='collapsedBtn' />
+            {!collapsed && <span onClick={() => handleNew(true)}><PlusOutlined />添加页</span>}
           </Menu.Item>
 
           {postList.map(postDesc => {
             return (
               <Menu.Item title={postDesc.title} key={postDesc.id || -1}
-                         onClick={() => {
-                           handleArticle(postDesc.id);
-                         }}>
+                onClick={() => {
+                  handleArticle(postDesc.id);
+                }}>
                 {postDesc.title || (postDesc.id ? `无标题页 - ${new Date(parseInt(postDesc.created, 10) * 1000).toLocaleString()}` : '未保存')}
               </Menu.Item>
             );
           })
           }
           {!collapsed &&
-          <Pagination className={styles.articlePagination}
-                      simple hideOnSinglePage
-                      defaultPageSize={20}
-                      current={postListCurrent}
-                      onChange={handlePagination}
-                      defaultCurrent={1} total={postListCount}/>
+            <Pagination className={styles.articlePagination}
+              simple hideOnSinglePage
+              defaultPageSize={20}
+              current={postListCurrent}
+              onChange={handlePagination}
+              defaultCurrent={1} total={postListCount} />
           }
 
 
@@ -188,12 +203,12 @@ export default (props: any): React.ReactNode => {
         <div className={styles.articleInner}>
           <div className={styles.formHeader}>
             <Input value={article.title} title={article.title} className={styles.formHeaderInput} placeholder="标题"
-                   onChange={(e: any) => handleSetArticle('title', e.target.value)}/>
+              onChange={(e: any) => handleSetArticle('title', e.target.value)} />
             <Cascader options={categoryData} expandTrigger="hover" placeholder="分类" changeOnSelect
-                      value={article.categories}
-                      onChange={val => handleSetArticle('categories', val)}/>
-            <Button type="primary" disabled={!article.changed || !(article.content||'').trim()} icon={<SaveOutlined/>}
-                    onClick={() => handlePublish()}/>
+              value={article.categories}
+              onChange={val => handleSetArticle('categories', val)} />
+            <Button type="primary" disabled={!article.changed || !(article.content || '').trim()} icon={<SaveOutlined />}
+              onClick={() => handlePublish()} />
             <Popconfirm
               className='button'
               placement="topRight"
@@ -202,7 +217,7 @@ export default (props: any): React.ReactNode => {
               okText="Yes"
               cancelText="No"
             >
-              <Button  type="dashed" icon={<DeleteOutlined/>} />
+              <Button type="dashed" icon={<DeleteOutlined />} />
             </Popconfirm>
           </div>
           <div>

@@ -48,7 +48,7 @@ const UserLayout: React.FC<UserLayoutProps> = props => {
                 <span className={styles.title}>Markdown note</span>
               </Link>
             </div>
-            <div className={styles.desc}>今日笔记</div>
+            <div className={styles.desc}>记录精彩</div>
           </div>
           {children}
         </div>
