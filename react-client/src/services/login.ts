@@ -1,4 +1,4 @@
-import request from '@/utils/request';
+import request from '@/utils/request-axios';
 
 export interface LoginParamsType {
   userName: string;
@@ -8,20 +8,20 @@ export interface LoginParamsType {
 }
 
 export async function fakeAccountLogin(params: LoginParamsType) {
-  return request('/api/users/login', {
+  return request('/users/login', {
     method: 'POST',
     data: params,
   });
 }
 
 export async function usersHeart() {
-  return request('/api/users/heart', {
+  return request('/users/heart', {
     method: 'POST',
   });
 }
 
 export async function usersLogout() {
-  return request('/api/users/logout', {
+  return request('/users/logout', {
     method: 'POST',
   });
 }

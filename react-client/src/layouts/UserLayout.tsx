@@ -3,7 +3,6 @@ import { Helmet, HelmetProvider } from 'react-helmet-async';
 import { Link, ConnectProps, connect } from 'umi';
 import React from 'react';
 import { ConnectState } from '@/models/connect';
-import { ShopOutlined } from '@ant-design/icons';
 import styles from './UserLayout.less';
 
 export interface UserLayoutProps extends Partial<ConnectProps> {
@@ -38,7 +37,7 @@ const UserLayout: React.FC<UserLayoutProps> = props => {
         <meta name="description" content={title} />
       </Helmet>
 
-      <div className={styles.container}>
+      <div className={styles.container} style={{backgroundImage:"url('./svg/user-layout-bg.svg')"}}>
         <div className={styles.lang} />
         <div className={styles.content}>
           <div className={styles.top}>

@@ -1,27 +1,27 @@
-import request from '@/utils/request';
+import request from '@/utils/request-axios';
 
 export async function fetchList(query: any) {
-    return request('/api/articles/list', {
+    return request('/articles/list', {
         method: 'POST',
         params: query
     })
 }
 export async function fetchArticle(id: any) {
-    return request('/api/articles/view', {
+    return request('/articles/view', {
         method: 'POST',
         params: { id }
     })
 }
 
 export async function deleteArticle(id: any) {
-    return request('/api/articles/delete', {
+    return request('/articles/delete', {
         method: 'POST',
         data: { id }
     })
 }
 
 export async function createArticle(data: any) {
-    return request('/api/articles/save', {
+    return request('/articles/save', {
         method: 'POST',
         data
     })

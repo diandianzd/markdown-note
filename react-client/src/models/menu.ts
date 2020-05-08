@@ -1,4 +1,4 @@
-import { getMenuData } from '@/services/menu'; // 通过后台返回特定的数组json或者mock模拟数据
+import { getMenuData } from '@/services/categories'; // 通过后台返回特定的数组json或者mock模拟数据
 
 import { Reducer, Effect } from 'umi';
 import { getCatRoutes, deepClone, getCatChildren } from '@/utils/note';

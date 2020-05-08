@@ -11,10 +11,10 @@ const { winPath } = utils;
 const { ANT_DESIGN_PRO_ONLY_DO_NOT_USE_IN_YOUR_PRODUCTION, REACT_APP_ENV, GA_KEY } = process.env;
 
 export default defineConfig({
-  /* history: {
-    type: 'hash'
-  }, */
-  hash: true,
+  history: {
+    type: 'hash',
+  },
+  // hash: true,
   antd: {},
   analytics: GA_KEY ? { ga: GA_KEY } : false,
   dva: {
@@ -146,6 +146,7 @@ export default defineConfig({
   manifest: {
     basePath: '/',
   },
+  publicPath: './',
   proxy: proxy[REACT_APP_ENV || 'dev'],
   chainWebpack: webpackPlugin,
 });

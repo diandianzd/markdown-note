@@ -30,17 +30,17 @@ const codeMessage = {
 const errorHandler = (error: { response: Response }): Response => {
 
   // @ts-ignore
-  const { response,message:apiMessage } = error;
+  const { response, message: apiMessage } = error;
   if (response && response.status) {
     const errorText = codeMessage[response.status] || response.statusText;
     const { status, url } = response;
-    const errString = `请求错误 ${status}: ${errorText} ${url}`
+    const errString = `请求错误 ${status}: ${errorText} ${url}`;
     message.error(errString);
-    throw errString
+    throw errString;
   } else if (!response) {
-    const errString = apiMessage || '您的网络发生异常，无法连接服务器'
+    const errString = apiMessage || '您的网络发生异常，无法连接服务器';
     message.error(errString);
-    throw errString
+    throw errString;
   }
   return response;
 };
@@ -50,31 +50,32 @@ const errorHandler = (error: { response: Response }): Response => {
  */
 const request = extend({
   data: {
-    t: getToken()
+    t: getToken(),
   },
   errorHandler, // 默认错误处理
   credentials: 'include', // 默认请求是否带上cookie
 });
 // request拦截器, 改变url 或 options.
 request.interceptors.request.use((url, options) => {
-  const token = getToken()
-  const data = { ...options.data, t: token }
+  const token = getToken();
+  const data = { ...options.data, t: token };
+
   return (
-    { url, options: { ...options, data } }
+    { url: (process.env.API_SERVER || '/mock') + url, options: { ...options, data } }
   );
-})
+});
 
 // response拦截器, 处理response
 request.interceptors.response.use(async (response) => {
   const data = await response.clone().json();
   if (data.code === 401) {
-    removeToken()
-    setTimeout(()=>{
+    removeToken();
+    setTimeout(() => {
       window.location.href = '/';
-    },1000)
-    throw data
+    }, 1000);
+    throw data;
   } else if (data.code !== 1) {
-    throw data
+    throw data;
   }
   return response;
 });
