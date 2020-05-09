@@ -1,8 +1,12 @@
 import Mock from 'mockjs'
 import login from './login'
+import categories from './categories';
+import articles from './articles';
 
 const mocks = [
   ...login,
+  ...categories,
+  ...articles,
 ]
 
 // 在这里可以做一些通用的配置

@@ -3,10 +3,12 @@
 ![category](https://github.com/diandianzd/git-resource/blob/master/note/category.png?raw=true)
 ![aritcle](https://github.com/diandianzd/git-resource/blob/master/note/article.png?raw=true)
 
+## 在线demo
+[预览](https://diandianzd.github.io/markdown-note/)
+
 ## 快速开始
 
 **获取源码**
-
 ``` shell
 git clone https://github.com/diandianzd/markdown-note
 ```
@@ -24,6 +26,7 @@ npm start
 ```
 
 **webpage**  `react-client`
+
 修改 react-client/config/proxy.ts 接口地址
 
 ``` shell

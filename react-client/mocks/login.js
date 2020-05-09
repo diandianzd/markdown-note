@@ -15,5 +15,12 @@ export default [
       };
     },
   },
+  {
+    url: '/mock/users/heart',
+    type: 'post',
+    response: () => {
+      return { 'code': 1, 'message': '操作成功！', 'data': null };
+    },
+  },
 ];
 
