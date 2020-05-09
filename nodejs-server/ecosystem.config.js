@@ -1,7 +1,7 @@
 module.exports = {
   apps : [{
     name: 'markdown-note.nodejs-server',
-    script: 'nodejs-server/bin/www',
+    script: 'bin/www',
 
     // Options reference: https://pm2.io/doc/en/runtime/reference/ecosystem-file/
     args: 'one two',
@@ -24,7 +24,7 @@ module.exports = {
       ref  : 'origin/deploy',
       repo : 'https://github.com/diandianzd/markdown-note.git',
       path : '/home/markdown-note',
-      'post-deploy' : 'git pull && cd nodejs-server && sudo npm install && cd .. && pm2 reload ecosystem.config.js --env production'
+      'post-deploy' : 'git fetch origin && git reset origin/deploy --hard && sudo npm install && pm2 reload ecosystem.config.js --env production'
     }
   }
 };

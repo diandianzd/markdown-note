@@ -1,0 +1,27 @@
+{
+  "name": "markdown-note",
+  "version": "1.0.0",
+  "description": "![category](https://github.com/diandianzd/git-resource/blob/master/note/category.png?raw=true)\r ![aritcle](https://github.com/diandianzd/git-resource/blob/master/note/article.png?raw=true)",
+  "main": "",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "gh-pages": "cd react-client && npm run deploy",
+    "publish": "npm run ghpages:api && npm run build:web && npm run ghpages:web",
+    "build:web": "cd react-client && npm run build",
+    "ghpages:api": "gh-pages -b deploy -d nodejs-server -t -f",
+    "ghpages:web": "gh-pages -b deploy -d react-client/dist -e public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/diandianzd/markdown-note.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/diandianzd/markdown-note/issues"
+  },
+  "homepage": "https://github.com/diandianzd/markdown-note#readme",
+  "devDependencies": {
+    "gh-pages": "^2.2.0"
+  }
+}

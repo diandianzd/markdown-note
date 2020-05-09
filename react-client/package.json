@@ -6,9 +6,8 @@
   "scripts": {
     "analyze": "cross-env ANALYZE=1 umi build",
     "build": "umi build",
-    "release": "umi build && rd /s/q  gh-pages && ren dist gh-pages",
     "deploy": "cross-env UMI_ENV=deploy umi build && npm run gh-pages",
-    "gh-pages": "gh-pages -d dist",
+    "gh-pages": "gh-pages -d dist -f",
     "start": "cross-env REACT_APP_ENV=dev MOCK=none umi dev",
     "docker-hub:build": "docker build  -f Dockerfile.hub -t  ant-design-pro ./",
     "docker-prod:build": "docker-compose -f ./docker/docker-compose.yml build",
