@@ -5,11 +5,10 @@
   "main": "",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "gh-pages": "cd react-client && npm run deploy",
-    "publish": "npm run ghpages:api && npm run build:web && npm run ghpages:web",
+    "gh-pages": "cd react-client && npm run build:gh-pages",
+    "deploy": "npm run build:web && npm run publish",
     "build:web": "cd react-client && npm run build",
-    "ghpages:api": "gh-pages -b deploy -d nodejs-server -t -f",
-    "ghpages:web": "gh-pages -b deploy -d react-client/dist -e public"
+    "publish": "gh-pages -b deploy -d nodejs-server -t -f && gh-pages -b deploy -d react-client/dist -e public"
   },
   "repository": {
     "type": "git",

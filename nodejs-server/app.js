@@ -48,7 +48,7 @@ app.use(async (req, res, next) => {
       } else {
         //  auth user
         req.body.user = user;
-        const tokenExpire = helper.timestamp() + 300;
+        const tokenExpire = helper.timestamp() + 1200;
         // update token expire
         await new DB().table('note_admin').where({ id: user.id }).update({ access_token_expire: tokenExpire });
         next();

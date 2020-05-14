@@ -2,7 +2,7 @@
 /* eslint-disable radix */
 import React from 'react'
 import * as Icon from "@ant-design/icons"
-import { NumberOutlined, MoreOutlined, CompressOutlined } from '@ant-design/icons'
+import { NumberOutlined } from '@ant-design/icons'
 
 // 遍历获取路由树状结构
 export function getCatRoutes(categories, categoryId) {

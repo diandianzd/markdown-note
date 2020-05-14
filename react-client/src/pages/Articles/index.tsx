@@ -94,13 +94,15 @@ export default (props: any): React.ReactNode => {
   };
   /**
    * 获取文章列表
-   * @param categoryId
+   * @param category
+   * @param content
+   * @param page
    */
   const fetchPostList = (category: number | null, content: string = '', page = 1) => {
 
     setPostListCurrent(page);
-
-    fetchList({ category, content, page, status: listStatus }).then(res => {
+    const filterColumn = content.indexOf('~') > -1 ? 'title' : 'content';
+    fetchList({ category, [filterColumn]: content.replace('~',''), page, status: listStatus }).then(res => {
       const { total, list } = res.data;
       setPostListCount(total);
       setPostList(list);
@@ -121,11 +123,10 @@ export default (props: any): React.ReactNode => {
     createArticle({
       id, title, content, category,
     }).then(res => {
-      const { isNewPost, id } = res.data
-      const { content, title, category } = article
+      const { isNewPost, id:saveId } = res.data
       setArticle({
         ...article,
-        id,
+        id:saveId,
         initialContent: content,
         changed: false,
       });
