@@ -55,9 +55,32 @@ ol {
 
 // 覆盖默认样式
 
+.ant-pro-sider-menu-sider {
+  height: 100vh;
+  overflow-y: auto;
+}
+
+.ant-pro-sider-menu-sider::-webkit-scrollbar {
+  width: 3px;
+  height: 1px;
+}
+
+.ant-pro-sider-menu-sider::-webkit-scrollbar-thumb {
+  border-radius: 5px;
+  box-shadow: inset 0 0 5px rgba(205, 205, 205, 0.2);
+  background: #535353;
+}
+
+.ant-pro-sider-menu-sider::-webkit-scrollbar-track {
+  box-shadow: transparent;
+  border-radius: 10px;
+  background: transparent;
+}
+
 .ant-menu-root {
   padding: 0 0 !important;
 }
+
 .ant-menu-item,
 .ant-menu-submenu-title {
   margin-top: 0 !important;
@@ -74,6 +97,7 @@ ol {
 .antd-pro-components-global-header-index-right {
   height: 40px !important;
 }
+
 .ant-layout-header {
   line-height: 40px !important;
 }
@@ -84,13 +108,14 @@ ol {
   min-width: 40px !important;
   width: 40px !important;
 }
+
 .ant-menu-inline-collapsed > li.ant-menu-item,
 .ant-menu-inline-collapsed > .ant-menu-item-group > .ant-menu-item-group-list > li.ant-menu-item,
 .ant-menu-inline-collapsed
-  > .ant-menu-item-group
-  > .ant-menu-item-group-list
-  > .ant-menu-submenu
-  > div.ant-menu-submenu-title,
+> .ant-menu-item-group
+> .ant-menu-item-group-list
+> .ant-menu-submenu
+> div.ant-menu-submenu-title,
 .ant-menu-inline-collapsed > .ant-menu-submenu > div.ant-menu-submenu-title {
   padding: 0 !important;
   display: flex;
@@ -98,18 +123,39 @@ ol {
 }
 
 
-.ant-menu-sub.ant-menu-inline > .ant-menu-item, 
-.ant-menu-sub.ant-menu-inline > .ant-menu-submenu > .ant-menu-submenu-title{
+.ant-menu-sub.ant-menu-inline > .ant-menu-item,
+.ant-menu-sub.ant-menu-inline > .ant-menu-submenu > .ant-menu-submenu-title {
   height: 32px !important;
   line-height: 32px !important;
 }
 
 .articleMenu {
+  overflow-y: auto;
+
+  &::-webkit-scrollbar {
+    width: 3px;
+    height: 1px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    border-radius: 5px;
+    box-shadow: #d0d0d0;
+    background: #d0d0d0;
+  }
+
+  &::-webkit-scrollbar-track {
+    box-shadow: transparent;
+    border-radius: 10px;
+    background: transparent;
+  }
+
+
   .ant-menu-item {
     padding: 0 10px !important;
     height: 32px !important;
     line-height: 32px !important;
   }
+
   .collapsedBtn {
     width: 45px;
     height: 32px;
@@ -118,6 +164,11 @@ ol {
     align-items: center;
   }
 }
+
+.articleMenu {
+  height: calc(100vh - 40px);
+}
+
 .articleMenu.ant-menu-inline-collapsed {
   width: 45px !important;
 
@@ -125,6 +176,7 @@ ol {
     padding: 0 0 0 2px !important;
     justify-content: flex-start;
   }
+
   .ant-menu-item:first-child {
     padding-left: 2px !important;
     justify-content: center;
@@ -135,6 +187,23 @@ ol {
   border: none !important;
 }
 
-.tui-editor-contents img{
+.tui-editor-contents img {
   width: 500px;
+}
+
+.te-ww-container > .te-editor::-webkit-scrollbar {
+  width: 5px;
+  height: 1px;
+}
+
+.te-ww-container > .te-editor::-webkit-scrollbar-thumb {
+  border-radius: 10px;
+  box-shadow: inset 0 0 5px rgba(87, 87, 87, 0.2);
+  background: #909090;
+}
+
+.te-ww-container > .te-editor::-webkit-scrollbar-track {
+  box-shadow: transparent;
+  border-radius: 10px;
+  background: transparent;
 }
