@@ -2,29 +2,28 @@ const express = require('express');
 
 const router = express.Router();
 const bodyParser = require('body-parser');
-const DB = require('../vendor/database/mysql');
 const helper = require('../vendor/helper');
+const Categories = require('../vendor/models/Categories');
+const Posts = require('../vendor/models/Posts');
+const sequelize = require('../vendor/database/sequelize')
+
 
 router.post('/delete', bodyParser.urlencoded({ extended: true }), async (req, res, next) => {
   // `UPDATE note_categories set status=0  WHERE id = ?`
   try {
     const id = parseInt(req.body.id || 0);
-    const childCategoryExist = await new DB().table('note_categories').where({ status: 1, parent_id: id }).query(true);
+    const childCategoryExist = await Categories.query().findOne({where:{ status: 1, parent_id: id }})
     if (childCategoryExist) {
       return res.send({ code: 0, message: '请先删除子分类', data: null });
     }
-    const rsp = await new DB().table('note_posts')
-      .where({ category: id })
-      .update({ category: -1 });
-    const rs = await new DB().table('note_categories')
-      .where({ id })
-      .update({ status: 0 });
-    console.log(rs);
-    res.send({
-      code: 1,
-      message: 'success',
-      data: null,
-    });
+    sequelize.transaction(function (t) {
+      return Promise.all([
+        Posts.query().update({ category: -1 }, { where: { category: id } }),
+        Categories.query().update({ status: 0 }, { where: { id } }),
+      ]);
+    })
+
+    helper.success(res)
   } catch (e) {
     console.log(e);
     res.send({ code: 0, message: '数据查询错误', data: null });
@@ -42,30 +41,22 @@ router.post('/save', bodyParser.urlencoded({ extended: true }), async (req, res,
     };
     let rs = null;
     if (id > 0) {
-      // eslint-disable-next-line camelcase
-      const queryAllCategories = await new DB().table('note_categories')
-        .select(['id', 'parent_id'])
-        .where({ status: 1 })
-        .orderBy('modified desc')
-        .query();
+      const category = await Categories.query().findOne({where:{id}})
+      if (!category) return helper.error('分类不存在')
+      const queryAllCategories = await Categories.query().findAll({
+        attributes:['id', 'parent_id'],
+        where:{status:1},
+        order:[['modified','desc']]
+      })
       if (!helper.checkCategoryValid(queryAllCategories, id,parent_id)) {
         return res.send({ code: 0, message: '分类选择错误', data: null });
       }
-      rs = await new DB().table('note_categories').where({ id }).update(params);
-      res.send({
-        code: 1,
-        message: 'success',
-        data: { id: req.body.id, isNewPost: 0 },
-      });
+      category.update(params)
+      helper.success(res,{ id: req.body.id, isNewPost: 0 })
     } else {
-      rs = await new DB().table('note_categories').insert(Object.assign(params, { created: curTime }));
-      res.send({
-        code: 1,
-        message: 'success',
-        data: { id: rs.insertId, isNewPost: 1 },
-      });
+      const category = await Categories.query().create(Object.assign(params, { created: curTime }))
+      helper.success(res,{ id: category.id, isNewPost: 1 })
     }
-    console.log(rs);
   } catch (e) {
     console.log(e);
     res.send({ code: 0, message: '数据查询错误', data: null });
@@ -74,16 +65,14 @@ router.post('/save', bodyParser.urlencoded({ extended: true }), async (req, res,
 
 router.post('/menudata', async (req, res, next) => {
   try {
-    const queryPostCategories = await new DB().table('note_posts').select(['DISTINCT category']).query();
+    const queryPostCategories = await Posts.query().findAll({ attributes:['category'] })
     const postCatIds = queryPostCategories.reduce((pre, cur) => pre.concat(cur.category), []);
-
-    //    'select icon, id, name, parent_id from note_categories WHERE status = 1 order by modified desc'
-    const queryAllCategories = await new DB().table('note_categories')
-      .select(['icon', 'id', 'name', 'parent_id'])
-      .where({ status: 1 })
-      .orderBy('modified desc')
-      .query();
-
+    const queryAllCategories = await Categories.query().findAll({
+      attributes:['icon', 'id', 'name', 'parent_id'],
+      where:{status: 1},
+      order:[['modified','desc']],
+      raw: true
+    })
     queryAllCategories.forEach((item, index) => {
       if (postCatIds.includes(item.id)) {
         queryAllCategories[index].used = 1;
@@ -91,12 +80,7 @@ router.post('/menudata', async (req, res, next) => {
         queryAllCategories[index].used = 0;
       }
     });
-
-    res.send({
-      code: 1,
-      message: 'success',
-      data: queryAllCategories,
-    });
+    helper.success(res,queryAllCategories)
   } catch (e) {
     console.log(e);
     res.send({ code: 0, message: '数据查询错误', data: null });

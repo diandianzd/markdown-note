@@ -101,8 +101,7 @@ export default (props: any): React.ReactNode => {
   const fetchPostList = (category: number | null, content: string = '', page = 1) => {
 
     setPostListCurrent(page);
-    const filterColumn = content.indexOf('~') > -1 ? 'title' : 'content';
-    fetchList({ category, [filterColumn]: content.replace('~',''), page, status: listStatus }).then(res => {
+    fetchList({ category, content, page, status: listStatus }).then(res => {
       const { total, list } = res.data;
       setPostListCount(total);
       setPostList(list);

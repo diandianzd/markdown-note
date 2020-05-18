@@ -9,8 +9,8 @@ const indexRouter = require('./routes/index');
 const usersRouter = require('./routes/users');
 const categoriesRouter = require('./routes/categories');
 const articlesRouter = require('./routes/articles');
-const DB = require('./vendor/database/mysql');
 const helper = require('./vendor/helper');
+const Users = require('./vendor/models/Users')
 
 const app = express();
 
@@ -34,28 +34,26 @@ app.use(bodyParser.urlencoded({extended: true, limit: '1000mb'})); */
 
 // verify token
 app.use(async (req, res, next) => {
-  const { t } = req.body;
+  const { t='' } = req.body;
 
   const commonRouter = ['/users/login', '/'];
   if (commonRouter.includes(req.url)) {
     next();
   } else {
     try {
-      const ip = helper.getNetIp(req);
-      const user = await new DB().table('note_admin').where({ access_token: t || '' }).query(true);
-      if (user.access_token_expire < helper.timestamp()) {
-        throw new Error('token过期');
-      } else {
-        //  auth user
-        req.body.user = user;
-        const tokenExpire = helper.timestamp() + 1200;
-        // update token expire
-        await new DB().table('note_admin').where({ id: user.id }).update({ access_token_expire: tokenExpire });
-        next();
-      }
+      const user = await Users.query().findOne({where:{
+            access_token: t || '',
+            access_token_expire: { $gt: helper.timestamp() }
+          }})
+      if (!user) throw new Error('token过期');
+      //  auth user
+      req.body.user = user;
+      const tokenExpire = helper.timestamp() + 1200;
+      user.update({ access_token_expire: tokenExpire })
+      next();
     } catch (e) {
       console.log(e);
-      res.send({ code: 401, message: 'token error', data: null });
+      helper.error(res,'Token Error!',401)
     }
   }
 });

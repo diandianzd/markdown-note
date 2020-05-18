@@ -27,7 +27,7 @@ module.exports = {
     return '-1'
   },
   timestamp: function () {
-    return Date.now() / 1000
+    return Math.ceil(Date.now() / 1000)
   },
   checkCategoryValid: function (categories, id, parentId) {
     if (id === parentId) return false
@@ -46,6 +46,16 @@ module.exports = {
       if (cursorId === -1 || cursorId === 0) return true
       if (!cursorId) return true
     }
+  },
+  success: function (res, data = null) {
+    return res.send({
+      code: 1,
+      message: 'Ok',
+      data
+    })
+  },
+  error: function (res, message, code = 0) {
+    return res.send({ code, message, data: null })
   }
 }
 

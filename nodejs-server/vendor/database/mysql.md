@@ -1,3 +1,8 @@
+### 安装依赖
+```
+npm install mysql --save
+
+```
 
 
 ### sql 绑定
