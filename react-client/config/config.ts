@@ -11,10 +11,10 @@ const { winPath } = utils;
 const { ANT_DESIGN_PRO_ONLY_DO_NOT_USE_IN_YOUR_PRODUCTION, REACT_APP_ENV, GA_KEY } = process.env;
 
 export default defineConfig({
-  history: {
+/*  history: {
     type: 'hash',
-  },
-  // hash: true,
+  },*/
+  hash: true,
   antd: {},
   analytics: GA_KEY ? { ga: GA_KEY } : false,
   dva: {
@@ -106,6 +106,7 @@ export default defineConfig({
     'primary-color': defaultSettings.primaryColor,
   },
   define: {
+    'process.env.PLATFORM': "markdown.note", // 发布平台
     REACT_APP_ENV: REACT_APP_ENV || false,
     ANT_DESIGN_PRO_ONLY_DO_NOT_USE_IN_YOUR_PRODUCTION:
       ANT_DESIGN_PRO_ONLY_DO_NOT_USE_IN_YOUR_PRODUCTION || '', // preview.pro.ant.design only do not use in your production ; preview.pro.ant.design 专用环境变量，请不要在你的项目中使用它。
@@ -146,7 +147,7 @@ export default defineConfig({
   manifest: {
     basePath: '/',
   },
-  publicPath: './',
+  publicPath: '/',
   proxy: proxy[REACT_APP_ENV || 'dev'],
   chainWebpack: webpackPlugin,
 });

@@ -157,8 +157,21 @@ export default (props: any): React.ReactNode => {
   };
 
   useEffect(() => {
+    let unmounted = false
     // Update the document title using the browser API
-    fetchPostList(currentCat, searchContent);
+
+    setPostListCurrent(1);
+    fetchList({category: currentCat, content: searchContent, page: 1, status: listStatus}).then(res => {
+      const {total, list} = res.data;
+      if (!unmounted) {
+        setPostListCount(total);
+        setPostList(list);
+      }
+    });
+
+    return () => {
+      unmounted = true
+    }
   }, [currentCat, searchContent]);
 
   return (

@@ -37,7 +37,7 @@ const UserLayout: React.FC<UserLayoutProps> = props => {
         <meta name="description" content={title} />
       </Helmet>
 
-      <div className={styles.container} style={{backgroundImage:"url('./svg/user-layout-bg.svg')"}}>
+      <div className={styles.container} style={{backgroundImage:`url('${process.env.PLATFORM === 'github'?'.':''}/svg/user-layout-bg.svg')`}}>
         <div className={styles.lang} />
         <div className={styles.content}>
           <div className={styles.top}>

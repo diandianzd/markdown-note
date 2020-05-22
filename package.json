@@ -1,11 +1,11 @@
 {
   "name": "markdown-note",
   "version": "1.0.0",
-  "description": "![category](https://github.com/diandianzd/git-resource/blob/master/note/category.png?raw=true)\r ![aritcle](https://github.com/diandianzd/git-resource/blob/master/note/article.png?raw=true)",
+  "description": "",
   "main": "",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "gh-pages": "cd react-client && npm run build:gh-pages",
+    "github": "cd react-client && npm run build:github",
     "deploy": "npm run build:web && npm run publish",
     "build:web": "cd react-client && npm run build",
     "publish": "gh-pages -b deploy -d nodejs-server -t -f && gh-pages -b deploy -d react-client/dist -e public"

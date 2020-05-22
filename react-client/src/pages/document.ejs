@@ -23,7 +23,7 @@
     />
     <title>Markdown Note</title>
     <link rel="icon" href="/favicon.png" type="image/x-icon" />
-    <%if(process.env.UMI_ENV === 'deploy'){%>
+    <%if(process.env.UMI_ENV === 'github'){%>
         <script>
           var _hmt = _hmt || [];
           (function() {
@@ -47,7 +47,7 @@
           padding: 0;
         }
         #root {
-          background-image: url('./home_bg.png');
+          background-image: url('<%if(process.env.UMI_ENV === 'github'){%>./<%}else{%>/<%}%>home_bg.png');
           background-repeat: no-repeat;
           background-size: 100% auto;
         }
@@ -202,7 +202,7 @@
           height: 100%;
         "
       >
-        <img src="./pro_icon.svg" alt="logo" width="256" />
+        <img src="<%if(process.env.UMI_ENV === 'github'){%>./<%}else{%>/<%}%>pro_icon.svg" alt="logo" width="256" />
         <div class="page-loading-warp">
           <div class="ant-spin ant-spin-lg ant-spin-spinning">
             <span class="ant-spin-dot ant-spin-dot-spin"

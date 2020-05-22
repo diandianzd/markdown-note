@@ -1,4 +1,4 @@
-import { stringify } from 'querystring';
+// import { stringify } from 'querystring';
 import { history, Reducer, Effect } from 'umi';
 
 import { fakeAccountLogin } from '@/services/login';
@@ -52,12 +52,12 @@ const Model: LoginModelType = {
               redirect = redirect.substr(redirect.indexOf('#') + 1);
             }
           } else {
-            window.location.href = '';
+            window.location.href = process.env.PLATFORM === 'github'?'':(redirect || '/');
             return;
           }
         }
         // history.replace(redirect || '/');
-        window.location.href = '';
+        window.location.href = process.env.PLATFORM === 'github'?'':'/';
       }
     },
 
@@ -68,9 +68,9 @@ const Model: LoginModelType = {
       if (window.location.pathname !== '/user/login' && !redirect) {
         history.replace({
           pathname: '/user/login',
-          search: stringify({
+          /* search: stringify({
             redirect: window.location.href,
-          }),
+          }), */
         });
       }
     },

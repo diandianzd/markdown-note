@@ -6,7 +6,7 @@
   "scripts": {
     "analyze": "cross-env ANALYZE=1 umi build",
     "build": "umi build",
-    "build:gh-pages": "cross-env UMI_ENV=deploy umi build && npm run gh-pages",
+    "build:github": "cross-env UMI_ENV=github umi build && npm run gh-pages",
     "gh-pages": "gh-pages -d dist -f",
     "start": "cross-env REACT_APP_ENV=dev MOCK=none umi dev",
     "docker-hub:build": "docker build  -f Dockerfile.hub -t  ant-design-pro ./",
@@ -51,7 +51,7 @@
   ],
   "dependencies": {
     "@ant-design/icons": "^4.0.0",
-    "@ant-design/pro-layout": "^5.0.8",
+    "@ant-design/pro-layout": "5.0.8",
     "@ant-design/pro-table": "^2.1.11",
     "@toast-ui/editor": "^2.1.1",
     "antd": "^4.0.0",
