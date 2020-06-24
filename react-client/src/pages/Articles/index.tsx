@@ -1,13 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { Row, Col, Menu, Input, Cascader, Button, message, Pagination, Popconfirm } from 'antd';
 import ToastUi from '@/components/ToastUi';
-import { DeleteOutlined, SaveOutlined, PlusOutlined, SwapOutlined } from '@ant-design/icons';
-import { fetchList, fetchArticle, createArticle, deleteArticle } from '@/services/articles';
+import { DeleteOutlined, SaveOutlined, PlusOutlined, SwapOutlined, CaretRightOutlined,CaretLeftOutlined } from '@ant-design/icons';
+import {fetchList, fetchArticle, createArticle, deleteArticle, fetchHistory} from '@/services/articles';
 import classnames from 'classnames';
 import { getCategories } from '@/utils/note';
 import styles from './index.less';
 
 interface Article {
+  log_id?: number
   title?: string
   content?: string
   initialContent?: string
@@ -76,9 +77,8 @@ export default (props: any): React.ReactNode => {
   };
   /**
    * 更新文章内容
-   * @param content
    */
-  const handleSetArticle = (keyName: string, val: string | Array<string>): void => {
+  const handleSetArticle = (keyName: string, val: any): void => {
     const newData = {
       ...article,
       [keyName]: val,
@@ -109,6 +109,22 @@ export default (props: any): React.ReactNode => {
 
   };
 
+  const handleHistory = (direction: string = 'lt') => {
+    const {id, log_id} = article
+    fetchHistory({id, log_id, direction}).then(res => {
+      const {log_id: logId, title, content} = res.data || {}
+      if (!logId) return
+      setArticle({
+        ...article,
+        log_id: logId,
+        title,
+        content,
+        initialContent:content,
+      });
+
+    });
+  }
+
   /**
    * 分页列表
    */
@@ -131,14 +147,9 @@ export default (props: any): React.ReactNode => {
       });
       // 更新当前分类列表
       const newList = postList.slice()
-      let hasIndex = -1
-      if (isNewPost) {
-        hasIndex = newList.length > 0 && !newList[0].id ? 0 : -1
-      } else {
-        hasIndex = postList.findIndex(item => item.id === id);
-      }
-      if (hasIndex > -1 && category === currentCat) {
-        newList[hasIndex].id = id
+      const hasIndex = isNewPost ? 0 : postList.findIndex(item => item.id === id);
+      if (category === currentCat) {
+        newList[hasIndex].id = saveId
         newList[hasIndex].title = title
         setPostList(newList)
       }
@@ -232,6 +243,10 @@ export default (props: any): React.ReactNode => {
             >
               <Button type="dashed" icon={<DeleteOutlined />} />
             </Popconfirm>
+            <Button type="dashed" icon={<CaretLeftOutlined />}
+                    onClick={() => handleHistory('lt')} />
+            <Button type="dashed" icon={<CaretRightOutlined />}
+                    onClick={() => handleHistory('gt')} />
           </div>
           <div>
             <ToastUi

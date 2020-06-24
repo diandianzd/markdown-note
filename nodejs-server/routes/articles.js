@@ -40,6 +40,30 @@ router.post('/view', async (req, res, next) => {
   }
 });
 
+router.post('/view-history', async (req, res, next) => {
+  const {id = 0, direction = '', log_id = null} = req.query
+  // 'select * from note_posts where id = ?',
+  try {
+    let where = {id}
+    let asc = 'desc'
+    if (log_id && ['gt','lt'].includes(direction)){
+      where['log_id'] = { [`$${direction}`]: log_id }
+      asc = direction === 'gt'?'asc':'desc'
+    }
+
+    const post = await PostsHistory.query().findOne({
+      attributes: ['id', 'log_id', 'title', 'content'],
+      where,
+      order: [['log_id', asc]],
+      raw: true
+    })
+    helper.success(res,post)
+  } catch (e) {
+    console.log(e);
+    helper.error(res,'数据查询错误')
+  }
+});
+
 router.post('/save', bodyParser.urlencoded({ extended: true }), async (req, res, next) => {
   // INSERT INTO note_posts set  status="active", type="markdown", title=? , content=? , category=?, modified= 1558938981, created= 1558938981
   try {
